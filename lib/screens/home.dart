@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:pet_house/screens/login.dart';
+import 'package:pet_house/screens/register.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -41,7 +44,12 @@ class HomeScreen extends StatelessWidget {
                     child: ElevatedButton.icon(
                       icon: Icon(Icons.add),
                       label: Text("Register", style: TextStyle(fontSize: 20)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return RegisterScreen();
+                        }));
+                      },
                     ),
                   ),
                   Padding(padding: const EdgeInsets.all(8.0)),
@@ -50,7 +58,12 @@ class HomeScreen extends StatelessWidget {
                     child: ElevatedButton.icon(
                       icon: Icon(Icons.login),
                       label: Text("Login", style: TextStyle(fontSize: 20)),
-                      onPressed: () {},
+                      onPressed: () {
+                         Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return LoginScreen();
+                        }));
+                      },
                     ),
                   ),
                   Row(
