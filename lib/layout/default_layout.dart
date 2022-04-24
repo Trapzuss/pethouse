@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/screens/profile.dart';
+import 'package:pet_house/screens/rank.dart';
+import 'package:pet_house/screens/aboutme.dart';
 import 'package:pet_house/utils/global_variable.dart';
 // import 'package:flutter/cupertino.dart';
 
@@ -63,32 +67,100 @@ class _DefaultLayoutState extends State<DefaultLayout> {
     pageController.jumpToPage(index);
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldrKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CupertinoNavigationBar(
-          leading: Icon(Icons.pets),
+        key: _scaffoldrKey,
+        appBar: CupertinoNavigationBar(
+          // leading: Icon(Icons.pets),
+          leading: const Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              'Petshouse',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
           // middle: Text("Pet's house"),
-          trailing: Icon(Icons.account_circle),
+          trailing: IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              _scaffoldrKey.currentState?.openEndDrawer();
+              // Scaffold.of(context).openEndDrawer();
+            },
+          ),
           backgroundColor: Colors.white70,
+        ),
+        // appBar: AppBar(title: Text('yo')),
+        endDrawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.black54,
+                        foregroundColor: Colors.white,
+                        child: Icon(Icons.person),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'userDisplayName',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Icon(Icons.lock)
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          '@username',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      )
+                    ]),
+                decoration: BoxDecoration(color: Color(0xff557C37)),
+              ),
+              ListTile(
+                title: Text('Personal Profile'),
+                leading: Icon(Icons.person),
+                onTap: () async {
+                  // onPageChanged(1);
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Profile()));
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Ranking'),
+                leading: Icon(Icons.leaderboard),
+                onTap: () async {
+                  // onPageChanged(1);
+                  await Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Rank()));
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('About me'),
+                leading: Icon(Icons.info),
+                onTap: () async {
+                  // onPageChanged(1);
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Aboutme()));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
         body: PageView(
           children: bottomNavigationScreenItems,
-          // [
-
-          // Container(
-          //   child: Text('0'),
-          // ),
-          // Container(
-          //   child: Text('1'),
-          // ),
-          // Container(
-          //   child: Text('2'),
-          // ),
-          // Container(
-          //   child: Text('3'),
-          // ),
-          // ],
           controller: pageController,
           onPageChanged: onPageChanged,
         ),
