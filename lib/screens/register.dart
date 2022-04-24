@@ -1,7 +1,6 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
-
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
