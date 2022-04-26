@@ -69,45 +69,13 @@ class _PostState extends State<Post> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 50,
-                                  child: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        'https://image.joox.com/JOOXcover/0/fe58ed87bcd7937b/300'),
-                                  ),
-                                ),
-                                Text('username',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'My dog become chuunibyuu...',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Row(
-                                children: [
-                                  for (var tag in tags)
-                                    Chip(
-                                      avatar: Icon(tag),
-                                      label: Icon(Icons.chevron_right),
-                                    )
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
+                      Flexible(
+                          child: Container(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                            'Actually he always hong bonkai everytime that i seen, Can anyone get them to pets pls!! ',
+                            style: TextStyle(fontSize: 12)),
+                      )),
                       Column(
                         children: [
                           Column(
@@ -126,12 +94,6 @@ class _PostState extends State<Post> {
                         ],
                       )
                     ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 4),
-                    child: Text(
-                        'Actually he always hong bonkai everytime that i seen, Can anyone get them to pets pls!! ',
-                        style: TextStyle(fontSize: 12)),
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 4),

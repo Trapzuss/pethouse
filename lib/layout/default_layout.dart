@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/screens/feed.dart';
 import 'package:pet_house/screens/profile.dart';
 import 'package:pet_house/screens/rank.dart';
 import 'package:pet_house/screens/aboutme.dart';
@@ -66,6 +67,26 @@ class _DefaultLayoutState extends State<DefaultLayout> {
   _onNavigationTapped(int index) {
     pageController.jumpToPage(index);
   }
+
+  void _incrementTab(index) {
+    setState(() {
+      print('PRESSED floating button');
+      print(index);
+    });
+  }
+
+  final List<Map<String, Object>> _tabs = <Map<String, Object>>[
+    {
+      'label': 'Home',
+      'icon': Icon(Icons.home),
+      'body': Feed(),
+    },
+    {
+      'label': 'Collection',
+      'icon': Icon(Icons.business),
+      'body': const Text('Collection'),
+    },
+  ];
 
   final GlobalKey<ScaffoldState> _scaffoldrKey = GlobalKey();
 
@@ -164,86 +185,98 @@ class _DefaultLayoutState extends State<DefaultLayout> {
           controller: pageController,
           onPageChanged: onPageChanged,
         ),
-        floatingActionButton: SpeedDial(
-          openCloseDial: isDialOpen,
-          icon: Icons.add,
-          spacing: 3,
-          activeIcon: Icons.close,
-          spaceBetweenChildren: 4,
-          dialRoot: customDialRoot
-              ? (ctx, open, toggleChildren) {
-                  return ElevatedButton(
-                    onPressed: toggleChildren,
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue[900],
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 22, vertical: 18),
-                    ),
-                    child: const Text(
-                      "Custom Dial Root",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  );
-                }
-              : null,
-          buttonSize: buttonSize,
-          label: extend ? Text('Open') : null,
-          activeLabel: extend ? const Text("Close") : null,
-          childrenButtonSize: childrenButtonSize,
-          visible: visible,
-          direction: speedDialDirection,
-          switchLabelPosition: switchLabelPosition,
-
-          /// If false, backgroundOverlay will not be rendered.
-          renderOverlay: renderOverlay,
-          // overlayColor: Colors.black,
-          // overlayOpacity: 0.5,
-          onOpen: () => debugPrint('OPENING DIAL'),
-          onClose: () => debugPrint('DIAL CLOSED'),
-          useRotationAnimation: useRAnimation,
-          tooltip: 'Open Speed Dial',
-          heroTag: 'speed-dial-hero-tag',
-          // foregroundColor: Colors.black,
-          backgroundColor: Color(0xff557C37),
-          // activeForegroundColor: Colors.red,
-          // activeBackgroundColor: Colors.blue,
-          elevation: 8.0,
-          isOpenOnStart: false,
-          animationSpeed: 200,
-          shape: customDialRoot
-              ? const RoundedRectangleBorder()
-              : const StadiumBorder(),
-          children: [
-            // SpeedDialChild(
-            //   child: !rmicons ? const Icon(Icons.accessibility) : null,
-            //   backgroundColor: Colors.red,
-            //   foregroundColor: Colors.white,
-            //   label: 'First',
-            //   onTap: () => setState(() => rmicons = !rmicons),
-            //   onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
-            // ),
-            SpeedDialChild(
-              child: !rmicons ? const Icon(Icons.chat_bubble_outline) : null,
-              backgroundColor: Colors.deepOrange,
-              foregroundColor: Colors.white,
-              label: 'Second',
-              onTap: () => debugPrint('SECOND CHILD'),
-            ),
-            SpeedDialChild(
-              child: !rmicons
-                  ? const Icon(Icons.video_camera_back_outlined)
-                  : null,
-              backgroundColor: Colors.indigo,
-              foregroundColor: Colors.white,
-              label: 'Show Snackbar',
-              visible: true,
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text(("Third Child Pressed")))),
-              onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
-            ),
-          ],
-          // childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+            _incrementTab(1);
+          },
+          tooltip: 'Increament',
+          child: new Icon(
+            Icons.camera,
+            color: Colors.amber,
+          ),
+          backgroundColor: Colors.white,
         ),
+        // floatingActionButton: SpeedDial(
+        //   openCloseDial: isDialOpen,
+        //   icon: Icons.add,
+        //   spacing: 3,
+        //   activeIcon: Icons.close,
+        //   spaceBetweenChildren: 4,
+        //   dialRoot: customDialRoot
+        //       ? (ctx, open, toggleChildren) {
+        //           return ElevatedButton(
+        //             onPressed: toggleChildren,
+        //             style: ElevatedButton.styleFrom(
+        //               primary: Colors.blue[900],
+        //               padding: const EdgeInsets.symmetric(
+        //                   horizontal: 22, vertical: 18),
+        //             ),
+        //             child: const Text(
+        //               "Custom Dial Root",
+        //               style: TextStyle(fontSize: 17),
+        //             ),
+        //           );
+        //         }
+        //       : null,
+        //   buttonSize: buttonSize,
+        //   label: extend ? Text('Open') : null,
+        //   activeLabel: extend ? const Text("Close") : null,
+        //   childrenButtonSize: childrenButtonSize,
+        //   visible: visible,
+        //   direction: speedDialDirection,
+        //   switchLabelPosition: switchLabelPosition,
+
+        //   /// If false, backgroundOverlay will not be rendered.
+        //   renderOverlay: renderOverlay,
+        //   // overlayColor: Colors.black,
+        //   // overlayOpacity: 0.5,
+        //   onOpen: () => debugPrint('OPENING DIAL'),
+        //   onClose: () => debugPrint('DIAL CLOSED'),
+        //   useRotationAnimation: useRAnimation,
+        //   tooltip: 'Open Speed Dial',
+        //   heroTag: 'speed-dial-hero-tag',
+        //   // foregroundColor: Colors.black,
+        //   backgroundColor: Color(0xff557C37),
+        //   // activeForegroundColor: Colors.red,
+        //   // activeBackgroundColor: Colors.blue,
+        //   elevation: 8.0,
+        //   isOpenOnStart: false,
+        //   animationSpeed: 200,
+        //   shape: customDialRoot
+        //       ? const RoundedRectangleBorder()
+        //       : const StadiumBorder(),
+        //   children: [
+        //     // SpeedDialChild(
+        //     //   child: !rmicons ? const Icon(Icons.accessibility) : null,
+        //     //   backgroundColor: Colors.red,
+        //     //   foregroundColor: Colors.white,
+        //     //   label: 'First',
+        //     //   onTap: () => setState(() => rmicons = !rmicons),
+        //     //   onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
+        //     // ),
+        //     SpeedDialChild(
+        //       child: !rmicons ? const Icon(Icons.chat_bubble_outline) : null,
+        //       backgroundColor: Colors.deepOrange,
+        //       foregroundColor: Colors.white,
+        //       label: 'Second',
+        //       onTap: () => debugPrint('SECOND CHILD'),
+        //     ),
+        //     SpeedDialChild(
+        //       child: !rmicons
+        //           ? const Icon(Icons.video_camera_back_outlined)
+        //           : null,
+        //       backgroundColor: Colors.indigo,
+        //       foregroundColor: Colors.white,
+        //       label: 'Show Snackbar',
+        //       visible: true,
+        //       onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+        //           const SnackBar(content: Text(("Third Child Pressed")))),
+        //       onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
+        //     ),
+        //   ],
+        //   // childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        // ),
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
             elevation: 2,
@@ -253,12 +286,12 @@ class _DefaultLayoutState extends State<DefaultLayout> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search), label: 'Discovery'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications), label: 'Notification'),
-              BottomNavigationBarItem(
                   icon: Icon(Icons.bookmark), label: 'Collection'),
             ],
+            // items: _tabs
+            //     .map((tab) =>
+            //         BottomNavigationBarItem(icon: tab.icon, label: tab.label))
+            //     .toList(),
             currentIndex: _state,
             onTap: _onNavigationTapped,
             unselectedItemColor: Color(0xff4A4A4A),
