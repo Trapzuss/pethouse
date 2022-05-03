@@ -51,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text("Beautiful community with on our hands!."),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  // ),
                   // SizedBox(
                   //   width: double.infinity,
                   //   child: ElevatedButton.icon(
@@ -81,22 +81,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   //     },
                   //   ),
                   // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Image.asset(
-                            "assets/images/footcat.png",
-                            width: 300,
-                            
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      )
-                    ],
-                  )
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     Column(
+                  //       mainAxisAlignment: MainAxisAlignment.end,
+                  //       children: [
+                  //         Image.asset(
+                  //           "assets/images/footcat.png",
+                  //           width: 300,
+                  //           fit: BoxFit.contain,
+                  //         ),
+                  //       ],
+                  //     )
+                  //   ],
+                  // )
                 ],
               ),
             ),
