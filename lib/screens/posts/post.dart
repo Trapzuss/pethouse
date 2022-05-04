@@ -30,7 +30,7 @@ class _PostState extends State<Post> {
                   ),
                 ),
                 InkWell(
-                  child: Icon(Icons.bookmark),
+                  child: Icon(Icons.bookmark_border_outlined),
                 )
               ],
             ),

@@ -1,5 +1,3 @@
-// import 'dart:html';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,7 +27,10 @@ class RegisterScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Image.asset("assets/images/pets.png",width: 200,),
+                  Image.asset(
+                    "assets/images/pets.png",
+                    width: 200,
+                  ),
                   Text("Pets's House",
                       style: GoogleFonts.freckleFace(
                           fontSize: 40, color: Colors.brown[800])),
@@ -93,7 +94,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                 Padding(
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -118,7 +119,7 @@ class RegisterScreen extends StatelessWidget {
                           // suffixIcon: Icon(Icons.visibility),
                           hintText: 'password',
                         ),
-                         keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.number,
                       ),
                     ),
                   ),

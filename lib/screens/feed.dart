@@ -24,22 +24,10 @@ class _FeedState extends State<Feed> {
     'https://www.familyeducation.com/sites/default/files/collection-item/Hedgehog_H.jpg',
     'https://www.familyeducation.com/sites/default/files/collection-item/Ferret_H.jpg'
   ];
-  final List<String> entries = <String>['A', 'B', 'C'];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      // child: ListView.separated(
-      //   padding: EdgeInsets.all(8),
-      //   itemCount: entries.length,
-      //   itemBuilder: (BuildContext context, int index) {
-      //     return Container(
-      //       child: Center(
-      //         child: Post(),
-      //       ),
-      //     );
-      //   },
-      //   separatorBuilder: (BuildContext context, int index) => Divider(),
-      // ),
       child: Container(
           padding: EdgeInsets.all(4),
           child: MasonryGridView.count(
