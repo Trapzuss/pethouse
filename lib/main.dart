@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Flutter Demo',
-      // home: DefaultLayout(),
+      home: DefaultLayout(),
 
-      home: HomeScreen(),
+      // home: HomeScreen(),
     );
   }
 }
