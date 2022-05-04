@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'register.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -87,7 +88,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Text("Don't have an account? Sing up."),
+                      child: GestureDetector(onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                      },child: Text("Don't have an account? Sing up.")),
                     )
                 ],
               ),
