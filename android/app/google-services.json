@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "903370349901",
+    "project_id": "pets-house-881f0",
+    "storage_bucket": "pets-house-881f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903370349901:android:1f10044be16dbd8cc82b04",
+        "android_client_info": {
+          "package_name": "com.example.pet_house"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "903370349901-opr3gntje8lu4q46e7s0k92muf1l7d7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYQRlgq0cHSpP6y6mAFKqjtkoMzy7uC2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "903370349901-opr3gntje8lu4q46e7s0k92muf1l7d7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
