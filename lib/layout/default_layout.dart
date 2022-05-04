@@ -6,7 +6,7 @@ import 'package:pet_house/screens/feed.dart';
 import 'package:pet_house/screens/profile.dart';
 import 'package:pet_house/screens/rank.dart';
 import 'package:pet_house/screens/aboutme.dart';
-import 'package:pet_house/screens/post.dart';
+import 'package:pet_house/screens/posts/createPost.dart';
 import 'package:pet_house/utils/global_variable.dart';
 import 'package:pet_house/widget/navigation/categoriesChip.dart';
 // import 'package:flutter/cupertino.dart';
@@ -85,7 +85,7 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         key: _scaffoldrKey,
         appBar: PreferredSize(
             child: Column(
-              children: const [
+              children: [
                 CupertinoNavigationBar(
                   // leading: Icon(Icons.pets),
                   leading: Padding(
