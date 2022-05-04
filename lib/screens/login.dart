@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/screens/forgot.dart';
 import 'register.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool isChecked = false;
+
+  @override
   Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.grey;
+    }
+
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Login"),
-      // ),
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -26,10 +43,10 @@ class LoginScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Image.asset("assets/images/pets.png"),
+                  Image.asset("assets/images/pets.png",width: 200,),
                   Text("Pets's House",
                       style: GoogleFonts.freckleFace(
-                          fontSize: 60, color: Colors.brown[800])),
+                          fontSize: 40, color: Colors.brown[800])),
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     child: Text("Beautiful community with on our hands!."),
@@ -50,8 +67,10 @@ class LoginScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.email),
                           hintText: 'email',
                         ),
+                        keyboardType: TextInputType.emailAddress,
                       ),
                     ),
                   ),
@@ -71,11 +90,53 @@ class LoginScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.lock),
+                          // suffixIcon: Icon(Icons.visibility),
                           hintText: 'password',
                         ),
+                        obscureText: true,
                       ),
                     ),
                   ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Forgot();
+                          }));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Forgot Password",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.start,
+                              //   children: [
+                              //     Checkbox(
+                              //       checkColor: Colors.white,
+                              //       fillColor: MaterialStateProperty.resolveWith(getColor),
+                              //       value: isChecked,
+                              //       onChanged: (bool? value) {
+                              //         setState(() {
+                              //           isChecked = value!;
+                              //         });
+                              //       }, 
+                              //     ),
+                              //     Text("Remember"),
+                              //   ]
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ),
                   SizedBox(
                       width: double.infinity,
                       child: Padding(
@@ -84,14 +145,30 @@ class LoginScreen extends StatelessWidget {
                           onPressed: () {},
                           child: const Text('LOG IN'),
                         ),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Don't have an Account?  ",
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return RegisterScreen();
+                          }));
+                        },
+                        child: Text(
+                          "Sign up",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: GestureDetector(onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
-                      },child: Text("Don't have an account? Sing up.")),
-                    )
+                    ],
+                  )
                 ],
               ),
             ),
