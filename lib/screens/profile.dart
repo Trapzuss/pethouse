@@ -46,8 +46,15 @@ class _ProfileState extends State<Profile> {
   final user = UserPreferences.mockUser;
   List img = [
     'https://www.familyeducation.com/sites/default/files/fe_slideshow/2008_03/Chipmunk_H.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/PotbellyPig_H.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/Chinchilla_H.jpg',
+    'https://media1.popsugar-assets.com/files/thumbor/PZXP_YZYLIecUhZhKVpH0ThoAsM/fit-in/728xorig/filters:format_auto-!!-:strip_icc-!!-/2019/07/18/646/n/1922243/3a21fb761112a072_pet/i/Royal-Pet-Portraits.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/Cockatiels_H.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/Iguana_H.jpg',
     'https://ae01.alicdn.com/kf/H35ab780c7bd04d81a9dae76bb729b9813/Vintage-Body-Deer-Cat-Dog-Portrait.jpg_640x640.jpg',
     'https://www.familyeducation.com/sites/default/files/collection-item/InsectSpider_H.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/Hedgehog_H.jpg',
+    'https://www.familyeducation.com/sites/default/files/collection-item/Ferret_H.jpg'
   ];
   File? image;
   Future pickImage(ImageSource source) async {
@@ -70,96 +77,103 @@ class _ProfileState extends State<Profile> {
       child: Padding(
         padding: const EdgeInsets.all(0),
         child: Center(
-            child: Column(
-          children: [
-            image != null
-                ? ImageWidget(
-                    path: image!,
-                    onClicked: () async {
-                      pickImage(ImageSource.gallery);
-                    })
-                : ImageWidget(
-                    path: user.imagePath,
-                    onClicked: () async {
-                      pickImage(ImageSource.gallery);
-                    }),
-            Container(
-              padding: EdgeInsets.all(8),
-              child: Column(
+            child: Container(
+          child: Column(
+            children: [
+              image != null
+                  ? ImageWidget(
+                      path: image!,
+                      onClicked: () async {
+                        pickImage(ImageSource.gallery);
+                      })
+                  : ImageWidget(
+                      path: user.imagePath,
+                      onClicked: () async {
+                        pickImage(ImageSource.gallery);
+                      }),
+              Container(
+                padding: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Text(
+                      user.username,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      user.bio,
+                      style:
+                          TextStyle(color: AppTheme.colors.secondaryFontColor),
+                    )
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () async {},
+                  child: Text('Edit'),
+                  style: ElevatedButton.styleFrom(
+                      primary: AppTheme.colors.primaryFontColor,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30)))),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
-                    user.username,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    user.bio,
-                    style: TextStyle(color: AppTheme.colors.secondaryFontColor),
-                  )
+                  _buildButtonColumn('Post', '20'),
+                  _buildButtonColumn('Likes', '50'),
                 ],
               ),
-            ),
-            ElevatedButton(
-                onPressed: () async {},
-                child: Text('Edit'),
-                style: ElevatedButton.styleFrom(
-                    primary: AppTheme.colors.primaryFontColor,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30)))),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildButtonColumn('Post', '20'),
-                _buildButtonColumn('Likes', '50'),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              padding: EdgeInsets.all(4),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: AppTheme.colors.primaryFontColor.withOpacity(0.05),
-                      spreadRadius: 2,
-                      blurRadius: 5),
-                  BoxShadow(
-                      color: AppTheme.colors.primary.withOpacity(1),
-                      spreadRadius: 2,
-                      blurRadius: 0,
-                      offset: Offset(0, 4))
-                ],
-                // border: Border(bottom: BorderSide(width: 2)),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30.0)),
-              ),
-              child: Column(mainAxisSize: MainAxisSize.max, children: [
-                Text(
-                  'My post',
-                  style: TextStyle(
-                      color: AppTheme.colors.secondaryFontColor, fontSize: 12),
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                padding: EdgeInsets.all(4),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color:
+                            AppTheme.colors.primaryFontColor.withOpacity(0.05),
+                        spreadRadius: 2,
+                        blurRadius: 5),
+                    BoxShadow(
+                        color: AppTheme.colors.primary.withOpacity(1),
+                        spreadRadius: 2,
+                        blurRadius: 0,
+                        offset: Offset(0, 4))
+                  ],
+                  // border: Border(bottom: BorderSide(width: 2)),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(30.0)),
                 ),
-                Container(
-                  padding: EdgeInsets.all(4),
-                  child: Icon(
-                    Icons.newspaper,
-                    color: AppTheme.colors.primaryFontColor,
+                child: Column(mainAxisSize: MainAxisSize.max, children: [
+                  Text(
+                    'My post',
+                    style: TextStyle(
+                        color: AppTheme.colors.secondaryFontColor,
+                        fontSize: 12),
                   ),
-                ),
-              ]),
-            ),
-            UserPicture()
-          ],
+                  Container(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.newspaper,
+                      color: AppTheme.colors.primaryFontColor,
+                    ),
+                  ),
+                ]),
+              ),
+              Flexible(
+                child: userPosts(),
+              )
+            ],
+          ),
         )),
       ),
     );
   }
 
-  Widget UserPicture() {
-    return SafeArea(
-        child: Container(
-      margin: EdgeInsets.only(top: 12),
-      height: 180,
+  Widget userPosts() {
+    return Container(
+      margin: EdgeInsets.only(top: 8),
       child: MasonryGridView.count(
         crossAxisCount: 2,
         itemCount: img.length,
@@ -188,6 +202,6 @@ class _ProfileState extends State<Profile> {
           );
         },
       ),
-    ));
+    );
   }
 }
