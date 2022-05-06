@@ -6,14 +6,14 @@ import 'package:pet_house/widget/post/animalClassSelection.dart';
 import 'package:pet_house/widget/post/pictureAction.dart';
 import 'package:pet_house/widget/post/postForm.dart';
 
-class CreatePost extends StatefulWidget {
-  const CreatePost({Key? key}) : super(key: key);
+class createPost extends StatefulWidget {
+  const createPost({Key? key}) : super(key: key);
 
   @override
-  State<CreatePost> createState() => _CreatePostState();
+  State<createPost> createState() => _createPostState();
 }
 
-class _CreatePostState extends State<CreatePost> {
+class _createPostState extends State<createPost> {
   File? uploadimage;
   void pickImage(newImage) {
     setState(() {
