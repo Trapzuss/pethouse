@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/screens/feed.dart';
-import 'package:pet_house/screens/profile.dart';
-import 'package:pet_house/screens/rank.dart';
-import 'package:pet_house/screens/aboutme.dart';
+// import 'package:pet_house/screens/profile.dart';
+// import 'package:pet_house/screens/rank.dart';
+// import 'package:pet_house/screens/aboutme.dart';
 import 'package:pet_house/screens/posts/createPost.dart';
 import 'package:pet_house/utils/global_variable.dart';
-import 'package:pet_house/widget/navigation/categoriesChip.dart';
+import 'package:pet_house/utils/utils.dart';
+import 'package:pet_house/widget/navigation/categorieschip.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 // import 'package:flutter/cupertino.dart';
 
 class DefaultLayout extends StatefulWidget {
@@ -20,6 +24,13 @@ class DefaultLayout extends StatefulWidget {
 
 class _DefaultLayoutState extends State<DefaultLayout> {
   int _state = 0;
+  String _appBarTitle = 'Pethouse';
+  List<IconData> iconList = [
+    (Icons.home),
+    (Icons.search),
+    (Icons.bookmark),
+    (Icons.account_circle)
+  ];
 
   var items = [
     FloatingActionButtonLocation.startFloat,
@@ -54,6 +65,15 @@ class _DefaultLayoutState extends State<DefaultLayout> {
   }
 
   _onNavigationTapped(int index) {
+    setState(() {
+      var title = {
+        0: 'Pethouse',
+        1: 'Discovery',
+        2: 'Collections',
+        3: 'Profile'
+      } as dynamic;
+      _appBarTitle = title[index];
+    });
     pageController.jumpToPage(index);
   }
 
@@ -71,9 +91,9 @@ class _DefaultLayoutState extends State<DefaultLayout> {
       'body': const Feed(),
     },
     {
-      'label': 'Collection',
+      'label': 'Collections',
       'icon': const Icon(Icons.business),
-      'body': const Text('Collection'),
+      'body': const Text('Collections'),
     },
   ];
 
@@ -82,75 +102,116 @@ class _DefaultLayoutState extends State<DefaultLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldrKey,
-        appBar: PreferredSize(
-            child: Column(
-              children: [
-                CupertinoNavigationBar(
-                  // leading: Icon(Icons.pets),
-                  leading: Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text(
-                      'Petshouse',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  // middle: Text("Pet's house"),
-                  // trailing: IconButton(
-                  //   icon: const Icon(Icons.account_circle),
-                  //   onPressed: () {
-                  //     _scaffoldrKey.currentState?.openEndDrawer();
-                  //     // Scaffold.of(context).openEndDrawer();
-                  //   },
-                  // ),
-                  backgroundColor: Colors.white70,
-                ),
-                CategoriesChip()
-              ],
-            ),
-            preferredSize: Size.fromHeight(100)),
-        // appBar: AppBar(title: Text('yo')),
+      key: _scaffoldrKey,
+      appBar: AppBar(
+        title: AppbarComputed(),
+      ),
+      // appBar: PreferredSize(
+      //     child: Column(
+      //       children: [
+      //         CupertinoNavigationBar(
+      //           // leading: Icon(Icons.pets),
+      //           leading: Padding(
+      //             padding: EdgeInsets.only(top: 8),
+      //             child: Text(
+      //               _appBarTitle,
+      //               style: TextStyle(fontWeight: FontWeight.bold),
+      //             ),
+      //           ),
+      //           // middle: Text("Pet's house"),
+      //           // trailing: IconButton(
+      //           //   icon: const Icon(Icons.account_circle),
+      //           //   onPressed: () {
+      //           //     _scaffoldrKey.currentState?.openEndDrawer();
+      //           //     // Scaffold.of(context).openEndDrawer();
+      //           //   },
+      //           // ),
+      //           backgroundColor: AppTheme.colors.primary,
+      //         ),
+      //         // CategoriesChip()
+      //       ],
+      //     ),
+      //     preferredSize: Size.fromHeight(60)),
+      // appBar: AppBar(title: Text('yo')),
 
-        body: PageView(
-          children: bottomNavigationScreenItems,
-          controller: pageController,
-          onPageChanged: onPageChanged,
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        children: bottomNavigationScreenItems,
+        controller: pageController,
+        onPageChanged: onPageChanged,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // _incrementTab(1);
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return createPost();
+          }));
+        },
+        tooltip: 'Create your Post',
+        child: Icon(
+          Icons.pets,
+          color: AppTheme.colors.primaryFontColor,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // _incrementTab(1);
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return CreatePost();
-            }));
-          },
-          tooltip: 'Increament',
-          child: const Icon(
-            Icons.camera,
-            color: Colors.amber,
+        backgroundColor: Colors.white,
+      ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        inactiveColor: AppTheme.colors.secondaryFontColor,
+        activeColor: AppTheme.colors.primaryFontColor,
+        icons: iconList,
+        activeIndex: _state,
+        gapLocation: GapLocation.center,
+        notchSmoothness: NotchSmoothness.verySmoothEdge,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        onTap: _onNavigationTapped,
+        //other params
+      ),
+    );
+  }
+
+  Widget AppbarComputed() {
+    if (_appBarTitle == 'Pethouse') {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/images/pets.png",
+            width: 70,
           ),
-          backgroundColor: Colors.white,
-        ),
-        bottomNavigationBar: SafeArea(
-          child: BottomNavigationBar(
-            elevation: 2,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
+          Text(
+            _appBarTitle,
+            style:
+                GoogleFonts.freckleFace(fontSize: 36, color: Colors.brown[800]),
+          )
+        ],
+      );
+    } else if (_appBarTitle == 'Discovery') {
+      return TextFormField(
+          decoration: InputDecoration(
+              hintText: 'search your animal',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
               ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.search), label: 'Search'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.bookmark), label: 'Collection'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), label: 'Profile'),
-            ],
-            currentIndex: _state,
-            onTap: _onNavigationTapped,
-            unselectedItemColor: const Color(0xff4A4A4A),
-            selectedItemColor: Colors.amber,
-          ),
-        ));
+              contentPadding: EdgeInsets.all(10),
+              suffixIcon: Icon(Icons.search),
+              filled: true,
+              fillColor: Color.fromARGB(179, 255, 255, 255)));
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          _appBarTitle,
+          style:
+              GoogleFonts.freckleFace(fontSize: 36, color: Colors.brown[800]),
+        )
+      ],
+    );
+    ;
   }
 }
