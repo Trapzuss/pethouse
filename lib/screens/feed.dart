@@ -29,6 +29,7 @@ class _FeedState extends State<Feed> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
+          margin: EdgeInsets.only(top: 8),
           padding: EdgeInsets.all(4),
           child: MasonryGridView.count(
             crossAxisCount: 2,

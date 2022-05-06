@@ -75,7 +75,7 @@ class Animals_ClassSelectionState extends State<AnimalsClassSelection> {
                     ],
                     onSelectedItemChanged: (value) {
                       setState(() {
-                        print(value);
+                        // print(value);
                         _selectedValue = value;
                       });
                     },
