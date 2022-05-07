@@ -1,16 +1,18 @@
-// import 'dart:ffi';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Post extends StatefulWidget {
-  const Post({Key? key}) : super(key: key);
+class postWidget extends StatefulWidget {
+  final String? path;
+  const postWidget({Key? key, required this.path}) : super(key: key);
 
   @override
-  State<Post> createState() => _PostState();
+  State<postWidget> createState() => _postWidgetState();
 }
 
-class _PostState extends State<Post> {
+class _postWidgetState extends State<postWidget> {
   final List<IconData> tags = [Icons.pets];
 
   @override
@@ -20,94 +22,66 @@ class _PostState extends State<Post> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Stack(
             children: [
               Container(
-                  child: Row(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    widget.path!,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    width: 50,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://image.joox.com/JOOXcover/0/fe58ed87bcd7937b/300'),
-                    ),
-                  ),
-                  Text(
-                    'Username',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              )),
-              Container(
-                  child: Row(
-                children: [
-                  Container(
-                    width: 50,
-                    child: Icon(Icons.language),
-                  ),
-                  Container(
-                      width: 50,
+                    padding: EdgeInsets.all(8),
+                    child: InkWell(
                       child: Icon(
-                        Icons.more_vert,
-                      ))
-                ],
-              ))
-            ],
-          ),
-          Container(
-            child: Image.network(
-                'https://image.joox.com/JOOXcover/0/fe58ed87bcd7937b/300'),
-          ),
-          Container(
-              padding: EdgeInsets.only(top: 8),
-              child: Center(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                          child: Container(
-                        padding: EdgeInsets.only(top: 4),
-                        child: Text(
-                            'Actually he always hong bonkai everytime that i seen, Can anyone get them to pets pls!! ',
-                            style: TextStyle(fontSize: 12)),
-                      )),
-                      Column(
-                        children: [
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.message),
-                                  Icon(Icons.favorite)
-                                ],
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [Text('1.4k Liked')],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 4),
-                    child: Text(
-                      'View all 2 comments',
-                      style: TextStyle(
-                        color: Colors.black38,
+                        Icons.more_horiz,
+                        color: Colors.white,
                       ),
+                      onTap: () => {showCollectionModal(context)},
                     ),
                   )
                 ],
-              )))
+              ),
+            ],
+          )
         ],
       ),
     );
+  }
+
+  Future showCollectionModal(BuildContext context) async {
+    if (Platform.isIOS) {
+      return showCupertinoModalPopup(
+          context: context,
+          builder: (context) => CupertinoActionSheet(
+                actions: [
+                  CupertinoActionSheetAction(
+                      onPressed: () => print('yes'),
+                      child: Text('Add to Collection')),
+                ],
+              ));
+    } else {
+      return showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.bookmark_add),
+                    title: Text('Add to Collection'),
+                    onTap: () => print('Add successfully'),
+                  ),
+                ],
+              ));
+    }
   }
 }
