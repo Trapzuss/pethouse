@@ -56,9 +56,12 @@ class _collectionScreenState extends State<collectionScreen> {
               path: img[index],
             ),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Post();
-              }));
+              // TODO getCollections and send id as prop to PostScreen
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return PostScreen();
+              // }
+              // ));
+              print('go to post in collections');
             },
           );
         },

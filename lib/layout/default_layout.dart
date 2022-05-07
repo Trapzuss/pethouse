@@ -1,19 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-// import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/screens/feed.dart';
-// import 'package:pet_house/screens/profile.dart';
-// import 'package:pet_house/screens/rank.dart';
-// import 'package:pet_house/screens/aboutme.dart';
-import 'package:pet_house/screens/posts/createPost.dart';
+import 'package:pet_house/screens/posts/newPost.dart';
 import 'package:pet_house/utils/global_variable.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/navigation/categorieschip.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// import 'package:flutter/cupertino.dart';
+import 'package:pet_house/screens/posts/updatePost.dart';
 
 class DefaultLayout extends StatefulWidget {
   const DefaultLayout({Key? key}) : super(key: key);
@@ -77,13 +71,6 @@ class _DefaultLayoutState extends State<DefaultLayout> {
     pageController.jumpToPage(index);
   }
 
-  void _incrementTab(index) {
-    setState(() {
-      print('PRESSED floating button');
-      print(index);
-    });
-  }
-
   final List<Map<String, Object>> _tabs = <Map<String, Object>>[
     {
       'label': 'Home',
@@ -106,34 +93,6 @@ class _DefaultLayoutState extends State<DefaultLayout> {
       appBar: AppBar(
         title: AppbarComputed(),
       ),
-      // appBar: PreferredSize(
-      //     child: Column(
-      //       children: [
-      //         CupertinoNavigationBar(
-      //           // leading: Icon(Icons.pets),
-      //           leading: Padding(
-      //             padding: EdgeInsets.only(top: 8),
-      //             child: Text(
-      //               _appBarTitle,
-      //               style: TextStyle(fontWeight: FontWeight.bold),
-      //             ),
-      //           ),
-      //           // middle: Text("Pet's house"),
-      //           // trailing: IconButton(
-      //           //   icon: const Icon(Icons.account_circle),
-      //           //   onPressed: () {
-      //           //     _scaffoldrKey.currentState?.openEndDrawer();
-      //           //     // Scaffold.of(context).openEndDrawer();
-      //           //   },
-      //           // ),
-      //           backgroundColor: AppTheme.colors.primary,
-      //         ),
-      //         // CategoriesChip()
-      //       ],
-      //     ),
-      //     preferredSize: Size.fromHeight(60)),
-      // appBar: AppBar(title: Text('yo')),
-
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         children: bottomNavigationScreenItems,
@@ -143,9 +102,9 @@ class _DefaultLayoutState extends State<DefaultLayout> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // _incrementTab(1);
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return createPost();
+            return newPost();
+            // return updatePostScreen();
           }));
         },
         tooltip: 'Create your Post',

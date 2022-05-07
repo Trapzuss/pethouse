@@ -195,9 +195,11 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Post();
-              }));
+              // TODO get myPost then send id as prop to PostScreen
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return PostScreen();
+              // }));
+              print('go to own post in profile');
             },
           );
         },

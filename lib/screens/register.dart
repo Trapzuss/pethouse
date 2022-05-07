@@ -7,7 +7,7 @@ class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
 
   final formKey = GlobalKey<FormState>();
-  final Future<FirebaseApp> firebase = Firebase.initializeApp();
+  // final Future<FirebaseApp> firebase = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
