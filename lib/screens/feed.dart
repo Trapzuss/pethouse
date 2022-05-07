@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/models/post.dart';
 import 'package:pet_house/screens/posts/post.dart';
 import 'package:pet_house/widget/post/postWidget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -25,40 +27,77 @@ class _FeedState extends State<Feed> {
     'https://www.familyeducation.com/sites/default/files/collection-item/Ferret_H.jpg'
   ];
 
+  Stream<List<Post>> getPosts() => FirebaseFirestore.instance
+      .collection('posts')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
           margin: EdgeInsets.only(top: 8),
           padding: EdgeInsets.all(4),
-          child: MasonryGridView.count(
-            crossAxisCount: 2,
-            itemCount: img.length,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            // shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      img[index],
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Post();
-                  }));
-                },
-              );
+          child:
+              // MasonryGridView.count(
+              //   crossAxisCount: 2,
+              //   itemCount: img.length,
+              //   mainAxisSpacing: 12,
+              //   crossAxisSpacing: 12,
+              //   // shrinkWrap: true,
+              //   itemBuilder: (context, index) {
+              //     return InkWell(
+              //       child: Container(
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(8.0),
+              //           ),
+              //           child: postWidget(path: img[index])),
+              //       onTap: () {
+              //         Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //           return PostScreen();
+              //         }));
+              //       },
+              //     );
+              //   },
+              // )
+              StreamBuilder<List<Post>>(
+            stream: getPosts(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Something went wrong! ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                final posts = snapshot.data!;
+                return buildPostsGridView(posts);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
             },
           )),
     );
   }
+
+  Widget buildPostsGridView(List<Post> posts) => MasonryGridView.count(
+        crossAxisCount: 2,
+        itemCount: posts.length,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        // shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return InkWell(
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: postWidget(path: posts[index].imageUrl)),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return PostScreen(
+                  id: posts[index].id,
+                );
+              }));
+            },
+          );
+        },
+      );
 }
