@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pet_house/utils/utils.dart';
 
 class PostForm extends StatefulWidget {
-  const PostForm({Key? key}) : super(key: key);
+  var controllerTitle = TextEditingController();
+  var controllerDescription = TextEditingController();
+
+  PostForm(
+      {Key? key,
+      required this.controllerTitle,
+      required this.controllerDescription})
+      : super(key: key);
 
   @override
   State<PostForm> createState() => _PostFormState();
@@ -35,6 +42,7 @@ class _PostFormState extends State<PostForm> {
                         textAlign: TextAlign.left,
                       ),
                       TextFormField(
+                          controller: widget.controllerTitle,
                           minLines: 2,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
@@ -57,6 +65,7 @@ class _PostFormState extends State<PostForm> {
                       textAlign: TextAlign.left,
                     ),
                     TextFormField(
+                        controller: widget.controllerDescription,
                         minLines: 6,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
