@@ -1,30 +1,55 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
-class pictureAction extends StatefulWidget {
+class mediaAction extends StatefulWidget {
   final action;
 
-  const pictureAction({Key? key, this.action}) : super(key: key);
+  const mediaAction({Key? key, this.action}) : super(key: key);
 
   @override
-  State<pictureAction> createState() => _pictureActionState();
+  State<mediaAction> createState() => _mediaActionState();
 }
 
-class _pictureActionState extends State<pictureAction> {
-  File? image;
+class _mediaActionState extends State<mediaAction> {
+  File? mediaFile;
 
-  Future pickImage(ImageSource source) async {
+  Future selectFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+          allowMultiple: false,
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4', 'avi', 'mov']);
+      if (result == null) return;
+      final path = result.files.single.path!;
+
+      setState(() {
+        mediaFile = File(path.toString());
+      });
+
+      // print(path);
+      widget.action(mediaFile);
+    } on PlatformException catch (e) {
+      print('Failed to pick files: $e');
+    }
+  }
+
+  Future pickMediaFile(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
       final imageTemporary = File(image.path);
+
+      print(imageTemporary);
       setState(() {
-        this.image = imageTemporary;
+        mediaFile = imageTemporary;
       });
+
+      // print(image);
       widget.action(image);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -45,13 +70,15 @@ class _pictureActionState extends State<pictureAction> {
                       Icons.photo_size_select_actual_rounded,
                       color: AppTheme.colors.primaryFontColor,
                     ),
-                    onTap: () => pickImage(ImageSource.gallery)),
+                    onTap: () => selectFile()),
+
+                // onTap: () => pickMediaFile(ImageSource.gallery)),
                 InkWell(
                   child: Icon(
                     Icons.camera_alt_sharp,
                     color: AppTheme.colors.primaryFontColor,
                   ),
-                  onTap: () => pickImage(ImageSource.camera),
+                  onTap: () => pickMediaFile(ImageSource.camera),
                 )
               ],
             ),

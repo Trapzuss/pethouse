@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_house/models/post.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/post/animalClassSelection.dart';
-import 'package:pet_house/widget/post/pictureAction.dart';
+import 'package:pet_house/widget/post/mediaAction.dart';
 import 'package:pet_house/widget/post/postForm.dart';
 import 'package:uuid/uuid.dart';
 
@@ -81,7 +81,7 @@ class _updatePostScreenState extends State<updatePostScreen> {
             child: Column(
               children: [
                 AnimalsClassSelection(),
-                pictureAction(action: pickImage)
+                mediaAction(action: pickImage)
               ],
             ),
           )

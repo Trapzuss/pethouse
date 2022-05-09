@@ -1,12 +1,19 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_house/api/firebase_api.dart';
 import 'package:pet_house/models/post.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/post/animalClassSelection.dart';
-import 'package:pet_house/widget/post/pictureAction.dart';
+import 'package:pet_house/widget/post/mediaAction.dart';
 import 'package:pet_house/widget/post/postForm.dart';
-import 'package:uuid/uuid.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:bot_toast/bot_toast.dart';
+// import 'package:uuid/uuid.dart';
+
+import 'package:path/path.dart';
 
 class newPost extends StatefulWidget {
   const newPost({Key? key}) : super(key: key);
@@ -16,34 +23,68 @@ class newPost extends StatefulWidget {
 }
 
 class _newPostState extends State<newPost> {
-  var uuid = Uuid();
-  File? uploadimage;
-  void pickImage(newImage) {
+  // var uuid = Uuid();
+  int _selectedClass = -1;
+  UploadTask? task;
+  File? uploadFile;
+  void pickImage(newMedia) {
     setState(() {
-      this.uploadimage = File(newImage.path);
+      this.uploadFile = File(newMedia.path);
+      // this.uploadFile = newMedia;
     });
   }
 
   final _controllerTitle = TextEditingController();
   final _controllerDescription = TextEditingController();
 
+  Future changingClass(newClass) async {
+    setState(() {
+      _selectedClass = newClass;
+    });
+  }
+
   Future createPost() async {
+    var close = BotToast.showLoading();
+    print(_selectedClass);
+    // #upload file to storage
+    if (uploadFile == null) return;
+    final fileName = '${basename(uploadFile!.path)}${DateTime.now()}';
+    final destination = "files/$fileName";
+    task = FirebaseApi.uploadFile(destination, uploadFile!);
+    if (task == null) return;
+    final snapshot = await task!.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    print('Dowload-Link: $urlDownload');
+
+    // #create document on firestore
     final title = _controllerTitle.text;
     final description = _controllerDescription.text;
     final docPost = FirebaseFirestore.instance.collection('posts').doc();
 
-    // TODO upload image -> imageUrl
     final post = Post(
         id: docPost.id,
-        imageUrl:
-            'https://ae01.alicdn.com/kf/H35ab780c7bd04d81a9dae76bb729b9813/Vintage-Body-Deer-Cat-Dog-Portrait.jpg_640x640.jpg',
+        imageUrl: urlDownload,
         title: title,
         description: description,
+        animalClass: Post.getAnimalClass(_selectedClass),
         createdAt: DateTime.now());
+
     final postJson = post.toJson();
 
     await docPost.set(postJson);
-    print('post successfully');
+
+    // print('post successfully');
+    close();
+    BotToast.showNotification(
+      leading: (cancel) => SizedBox.fromSize(
+          size: const Size(40, 40),
+          child: IconButton(
+            icon: Icon(Icons.check_circle, color: Colors.green),
+            onPressed: cancel,
+          )),
+      duration: Duration(seconds: 3),
+      title: (_) => Text('Done! check you post'),
+    );
   }
 
   @override
@@ -72,11 +113,11 @@ class _newPostState extends State<newPost> {
           Container(
             margin: EdgeInsets.only(top: 12),
             padding: EdgeInsets.all(8),
-            child: uploadimage != null
+            child: uploadFile != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.file(
-                      uploadimage!,
+                      uploadFile!,
                       height: 200,
                       fit: BoxFit.contain,
                     ),
@@ -89,8 +130,9 @@ class _newPostState extends State<newPost> {
           Container(
             child: Column(
               children: [
-                AnimalsClassSelection(),
-                pictureAction(action: pickImage)
+                new AnimalsClassSelection(
+                    selectedClass: _selectedClass, callback: changingClass),
+                mediaAction(action: pickImage)
               ],
             ),
           )
