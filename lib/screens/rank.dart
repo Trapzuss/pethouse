@@ -10,8 +10,8 @@ class Rank extends StatefulWidget {
 class _RankState extends State<Rank> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Text('ranking'),
+    return Scaffold(
+      appBar: AppBar(title: Text('Hello')),
     );
   }
 }
