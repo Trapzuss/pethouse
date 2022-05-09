@@ -10,27 +10,16 @@ import 'package:pet_house/widget/common/ImageWidget.dart';
 
 import 'package:bot_toast/bot_toast.dart';
 
-class Edit_Profile extends StatefulWidget {
-  const Edit_Profile({Key? key}) : super(key: key);
+class editProfile extends StatefulWidget {
+  const editProfile({Key? key}) : super(key: key);
 
   @override
-  State<Edit_Profile> createState() => _Edit_ProfileState();
+  State<editProfile> createState() => _editProfileState();
 }
 
-class _Edit_ProfileState extends State<Edit_Profile> {
+class _editProfileState extends State<editProfile> {
   final user = UserPreferences.mockUser;
-  List img = [
-    'https://www.familyeducation.com/sites/default/files/fe_slideshow/2008_03/Chipmunk_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/PotbellyPig_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Chinchilla_H.jpg',
-    'https://media1.popsugar-assets.com/files/thumbor/PZXP_YZYLIecUhZhKVpH0ThoAsM/fit-in/728xorig/filters:format_auto-!!-:strip_icc-!!-/2019/07/18/646/n/1922243/3a21fb761112a072_pet/i/Royal-Pet-Portraits.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Cockatiels_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Iguana_H.jpg',
-    'https://ae01.alicdn.com/kf/H35ab780c7bd04d81a9dae76bb729b9813/Vintage-Body-Deer-Cat-Dog-Portrait.jpg_640x640.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/InsectSpider_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Hedgehog_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Ferret_H.jpg'
-  ];
+
   File? image;
   Future pickImage(ImageSource source) async {
     try {
@@ -56,9 +45,8 @@ class _Edit_ProfileState extends State<Edit_Profile> {
         leading: IconButton(
           icon: Icon(Icons.cancel_outlined),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Profile();
-            }));
+            // BackButton();
+            Navigator.pop(context);
           },
         ),
         title: Row(
