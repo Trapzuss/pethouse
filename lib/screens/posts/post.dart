@@ -107,27 +107,38 @@ class _PostScreenState extends State<PostScreen> {
               ),
               Column(
                 children: [
-                  like!
-                      ? InkWell(
-                          radius: 8,
-                          child: Icon(
-                            Icons.pets,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              like = !like!;
-                            });
-                          },
-                        )
-                      : InkWell(
-                          radius: 8,
-                          child: Image.asset('assets/images/pawprint2.png'),
-                          onTap: () {
-                            setState(() {
-                              like = !like!;
-                            });
-                          },
-                        ),
+                  InkWell(
+                    radius: 8,
+                    child: Icon(
+                      Icons.pets,
+                    ),
+                    // onTap: () {
+                    //   setState(() {
+                    //     like = !like!;
+                    //   });
+                    // },
+                  ),
+                  // like!
+                  //     ? InkWell(
+                  //         radius: 8,
+                  //         child: Icon(
+                  //           Icons.pets,
+                  //         ),
+                  //         onTap: () {
+                  //           setState(() {
+                  //             like = !like!;
+                  //           });
+                  //         },
+                  //       )
+                  //     : InkWell(
+                  //         radius: 8,
+                  //         child: Image.asset('assets/images/pawprint2.png'),
+                  //         onTap: () {
+                  //           setState(() {
+                  //             like = !like!;
+                  //           });
+                  //         },
+                  //       ),
                   Text('Like')
                 ],
               )
