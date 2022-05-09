@@ -49,8 +49,9 @@ class _PostScreenState extends State<PostScreen> {
 
   Widget postFull(Post post) {
     return SafeArea(
-        child: Container(
-            child: Column(
+        child: ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
       children: [
         Container(
           padding: EdgeInsets.all(8),
@@ -74,18 +75,9 @@ class _PostScreenState extends State<PostScreen> {
             ],
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-            child: Image.network(
-              post.imageUrl,
-              fit: BoxFit.contain,
-            ),
-          ),
-          alignment: Alignment.center,
+        Image.network(
+          post.imageUrl,
+          fit: BoxFit.contain,
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -112,33 +104,7 @@ class _PostScreenState extends State<PostScreen> {
                     child: Icon(
                       Icons.pets,
                     ),
-                    // onTap: () {
-                    //   setState(() {
-                    //     like = !like!;
-                    //   });
-                    // },
                   ),
-                  // like!
-                  //     ? InkWell(
-                  //         radius: 8,
-                  //         child: Icon(
-                  //           Icons.pets,
-                  //         ),
-                  //         onTap: () {
-                  //           setState(() {
-                  //             like = !like!;
-                  //           });
-                  //         },
-                  //       )
-                  //     : InkWell(
-                  //         radius: 8,
-                  //         child: Image.asset('assets/images/pawprint2.png'),
-                  //         onTap: () {
-                  //           setState(() {
-                  //             like = !like!;
-                  //           });
-                  //         },
-                  //       ),
                   Text('Like')
                 ],
               )
@@ -164,6 +130,6 @@ class _PostScreenState extends State<PostScreen> {
           ),
         )
       ],
-    )));
+    ));
   }
 }
