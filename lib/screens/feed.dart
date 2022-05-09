@@ -11,14 +11,14 @@ import 'package:pet_house/widget/common/gradientButtonWidget.dart';
 import 'package:pet_house/widget/post/postWidget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class Feed extends StatefulWidget {
-  const Feed({Key? key}) : super(key: key);
+class FeedScreen extends StatefulWidget {
+  const FeedScreen({Key? key}) : super(key: key);
 
   @override
-  State<Feed> createState() => _FeedState();
+  State<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _FeedState extends State<Feed> {
+class _FeedScreenState extends State<FeedScreen> {
   Stream<List<Post>> getPosts() => FirebaseFirestore.instance
       .collection('posts')
       .snapshots()

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
-  const Search({ Key? key }) : super(key: key);
+  const Search({Key? key}) : super(key: key);
 
   @override
   State<Search> createState() => _SearchState();
@@ -10,14 +10,6 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Search for picture' 
-          ),
-        ),
-      ),
-    );
+    return Container();
   }
 }

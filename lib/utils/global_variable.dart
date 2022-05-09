@@ -6,7 +6,7 @@ import 'package:pet_house/screens/profile.dart';
 import 'package:pet_house/screens/collections/collections.dart';
 
 List<Widget> bottomNavigationScreenItems = [
-  const Feed(),
+  const FeedScreen(),
   const Search(),
   const collectionsScreen(),
   const Profile(),
