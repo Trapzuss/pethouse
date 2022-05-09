@@ -104,13 +104,15 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return newPost();
-            // return updatePostScreen();
           }));
         },
-        tooltip: 'Create your Post',
-        child: Icon(
-          Icons.pets,
-          color: AppTheme.colors.primaryFontColor,
+        tooltip: 'Create your post',
+        child: CircleAvatar(
+          backgroundColor: AppTheme.colors.primaryFontColor,
+          child: Icon(
+            Icons.pets,
+            color: Color.fromARGB(255, 243, 243, 243),
+          ),
         ),
         backgroundColor: Colors.white,
       ),
