@@ -1,16 +1,18 @@
+import 'dart:ffi';
 import 'dart:math';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:pet_house/screens/edit_Profile.dart';
+import 'package:pet_house/screens/edit_profile.dart';
 import 'package:pet_house/screens/posts/post.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pet_house/services/authentication_services.dart';
 import 'package:pet_house/utils/user_preferences.dart';
 import 'dart:io';
-
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/common/ImageWidget.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -19,43 +21,10 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
-Column _buildButtonColumn(String label, String text) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Container(
-        margin: const EdgeInsets.only(top: 8),
-        child: Text(
-          label,
-          style: TextStyle(
-              fontSize: 10, color: AppTheme.colors.secondaryFontColor),
-        ),
-      ),
-      Text(
-        text,
-        style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.colors.primaryFontColor),
-      ),
-    ],
-  );
-}
-
 class _ProfileState extends State<Profile> {
   final user = UserPreferences.mockUser;
   List img = [
     'https://www.familyeducation.com/sites/default/files/fe_slideshow/2008_03/Chipmunk_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/PotbellyPig_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Chinchilla_H.jpg',
-    'https://media1.popsugar-assets.com/files/thumbor/PZXP_YZYLIecUhZhKVpH0ThoAsM/fit-in/728xorig/filters:format_auto-!!-:strip_icc-!!-/2019/07/18/646/n/1922243/3a21fb761112a072_pet/i/Royal-Pet-Portraits.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Cockatiels_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Iguana_H.jpg',
-    'https://ae01.alicdn.com/kf/H35ab780c7bd04d81a9dae76bb729b9813/Vintage-Body-Deer-Cat-Dog-Portrait.jpg_640x640.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/InsectSpider_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Hedgehog_H.jpg',
-    'https://www.familyeducation.com/sites/default/files/collection-item/Ferret_H.jpg'
   ];
   File? image;
   Future pickImage(ImageSource source) async {
@@ -70,6 +39,39 @@ class _ProfileState extends State<Profile> {
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
+  }
+
+  Future signOutCustom() async {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.WARNING,
+      animType: AnimType.BOTTOMSLIDE,
+      title: "Oh no! You're leaving...",
+      desc: 'Are you sure?',
+      btnCancelText: 'Nope',
+      btnOkText: 'Log me Out',
+      btnOkColor: Colors.red,
+      btnCancelColor: Colors.white,
+      dialogBackgroundColor: Color.fromARGB(255, 245, 245, 245),
+      buttonsTextStyle: TextStyle(color: Colors.black),
+      btnCancelOnPress: () {
+        return;
+      },
+      btnOkOnPress: () async {
+        await AuthenticationService().signOut();
+        BotToast.showNotification(
+          crossPage: true,
+          leading: (cancel) => SizedBox.fromSize(
+              size: const Size(40, 40),
+              child: IconButton(
+                icon: Icon(Icons.logout, color: Colors.red),
+                onPressed: cancel,
+              )),
+          duration: Duration(seconds: 3),
+          title: (_) => Text('Logged out'),
+        );
+      },
+    )..show();
   }
 
   @override
@@ -88,6 +90,23 @@ class _ProfileState extends State<Profile> {
   Widget profileHeaderWidget(BuildContext context) {
     return Column(
       children: [
+        Container(
+          margin: EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                child: Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                ),
+                onTap: () {
+                  signOutCustom();
+                },
+              )
+            ],
+          ),
+        ),
         image != null
             ? Container(
                 margin: EdgeInsets.only(top: 16),
@@ -122,10 +141,9 @@ class _ProfileState extends State<Profile> {
         ),
         ElevatedButton(
             onPressed: () async {
-              Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return Edit_Profile();
-                          }));
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return editProfile();
+              }));
             },
             child: Text('Edit'),
             style: ElevatedButton.styleFrom(
@@ -221,6 +239,30 @@ class _ProfileState extends State<Profile> {
           );
         },
       ),
+    );
+  }
+
+  Column _buildButtonColumn(String label, String text) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+                fontSize: 10, color: AppTheme.colors.secondaryFontColor),
+          ),
+        ),
+        Text(
+          text,
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.colors.primaryFontColor),
+        ),
+      ],
     );
   }
 }
