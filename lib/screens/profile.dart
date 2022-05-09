@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pet_house/screens/edit_Profile.dart';
 import 'package:pet_house/screens/posts/post.dart';
 
 import 'package:flutter/material.dart';
@@ -120,7 +121,12 @@ class _ProfileState extends State<Profile> {
           ),
         ),
         ElevatedButton(
-            onPressed: () async {},
+            onPressed: () async {
+              Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Edit_Profile();
+                          }));
+            },
             child: Text('Edit'),
             style: ElevatedButton.styleFrom(
                 primary: AppTheme.colors.primaryFontColor,

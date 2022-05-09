@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pet_house/screens/edit_Profile.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,11 +39,13 @@ class MyApp extends StatelessWidget {
               .copyWith(primary: AppTheme.colors.primary),
           appBarTheme: AppBarTheme(foregroundColor: Color(0xFF263238))),
       title: 'Flutter Demo',
-      // home: HomeScreen(),
-
-      home: DefaultLayout(),
+      home: Edit_Profile(),
       navigatorObservers: [BotToastNavigatorObserver()],
       builder: BotToastInit(),
+
+      // home: DefaultLayout(),
+      // navigatorObservers: [BotToastNavigatorObserver()],
+      // builder: BotToastInit(),
     );
   }
 }
