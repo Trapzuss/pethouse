@@ -29,7 +29,7 @@ class _CategoryState extends State<Category>
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Feed();
+              return FeedScreen();
             }));
           },
         ),
@@ -99,7 +99,6 @@ class _ButtomPageState extends State<ButtomPage> {
   }
 
   Widget _buildCard(String imgPath, String name) {
-
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -111,7 +110,7 @@ class _ButtomPageState extends State<ButtomPage> {
       }
       return Colors.grey;
     }
-    
+
     return Padding(
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
       child: InkWell(
@@ -165,26 +164,26 @@ class _ButtomPageState extends State<ButtomPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                         Checkbox(
-                                    checkColor: Colors.white,
-                                    fillColor: MaterialStateProperty.resolveWith(getColor),
-                                    value: isChecked,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isChecked = value!;
-                                      });
-                                    }, 
-                                  ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Total',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Checkbox(
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isChecked = value!;
+                          });
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Total',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),
