@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_house/screens/feed.dart';
@@ -75,7 +76,7 @@ class _DefaultLayoutState extends State<DefaultLayout> {
     {
       'label': 'Home',
       'icon': const Icon(Icons.home),
-      'body': const Feed(),
+      'body': const FeedScreen(),
     },
     {
       'label': 'Collections',
@@ -88,6 +89,8 @@ class _DefaultLayoutState extends State<DefaultLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       key: _scaffoldrKey,
       appBar: AppBar(
@@ -100,22 +103,24 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         onPageChanged: onPageChanged,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return newPost();
-          }));
-        },
-        tooltip: 'Create your post',
-        child: CircleAvatar(
-          backgroundColor: AppTheme.colors.primaryFontColor,
-          child: Icon(
-            Icons.pets,
-            color: Color.fromARGB(255, 243, 243, 243),
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
+      floatingActionButton: Visibility(
+          visible: !keyboardIsOpen,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return newPost();
+              }));
+            },
+            tooltip: 'Create your post',
+            child: CircleAvatar(
+              backgroundColor: AppTheme.colors.primaryFontColor,
+              child: Icon(
+                Icons.pets,
+                color: Color.fromARGB(255, 243, 243, 243),
+              ),
+            ),
+            backgroundColor: Colors.white,
+          )),
       bottomNavigationBar: AnimatedBottomNavigationBar(
         inactiveColor: AppTheme.colors.secondaryFontColor,
         activeColor: AppTheme.colors.primaryFontColor,
