@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/screens/login.dart';
+import 'package:pet_house/services/authentication_services.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
@@ -14,12 +15,13 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
   String? _validateEmail(String? value) {
-    RegExp emailRegex = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$', caseSensitive: false);
+    RegExp emailRegex = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$',
+        caseSensitive: false);
     if (value == null || value.isEmpty) {
       return 'Required';
     } else if (!emailRegex.hasMatch(value)) {
@@ -28,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  String? _validateName(String? value) {
+  String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
       return 'Required';
     }
@@ -53,10 +55,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  Future<void> _submitForm(BuildContext context) async {
-    final String _email = _emailController.text;
-    final String _name = _nameController.text;
-    final String _password = _passwordController.text;
+  Future<void> signUpCustom() async {
+    final isValid = _formKey.currentState!.validate();
+    final String _email = _emailController.text.trim();
+    final String _name = _usernameController.text.trim();
+    final String _password = _passwordController.text.trim();
+    if (!isValid) return;
+    AuthenticationService().signUp(_name, _email, _password);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -75,139 +88,151 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Center(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Image.asset(
-                    "assets/images/pets.png",
-                    width: 200,
-                  ),
-                  Text("Pets's House",
-                      style: GoogleFonts.freckleFace(
-                          fontSize: 40, color: Colors.brown[800])),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Beautiful community with on our hands!."),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Username",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/images/pets.png",
+                      width: 200,
                     ),
-                  ),
-                  SizedBox(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
-                          hintText: 'username',
-                        ),
-                        keyboardType: TextInputType.name,
+                    Text("Pets's House",
+                        style: GoogleFonts.freckleFace(
+                            fontSize: 40, color: Colors.brown[800])),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Beautiful community with on our hands!."),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Username",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Email",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.email),
-                          hintText: 'email',
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Password",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.lock),
-                          // suffixIcon: Icon(Icons.visibility),
-                          hintText: 'password',
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                      width: double.infinity,
+                    SizedBox(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Color(0xff2979ff)),
-                          onPressed: () {},
-                          child: const Text('SIGN UP'),
-                        ),
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Already have an Account?  ",
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return LoginScreen();
-                          }));
-                        },
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        child: TextFormField(
+                          validator: _validateUsername,
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person),
+                            hintText: 'username',
                           ),
+                          keyboardType: TextInputType.name,
                         ),
-                      )
-                    ],
-                  )
-                ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Email",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        child: TextFormField(
+                          validator: _validateEmail,
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.email),
+                            hintText: 'email',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Password",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        child: TextFormField(
+                          validator: _validatePassword,
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.lock),
+                            // suffixIcon: Icon(Icons.visibility),
+                            hintText: 'password',
+                          ),
+                          obscureText: true,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color(0xff2979ff)),
+                            onPressed: () {
+                              signUpCustom();
+                            },
+                            child: const Text('SIGN UP'),
+                          ),
+                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Already have an Account?  ",
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return LoginScreen();
+                            }));
+                          },
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
