@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_house/models/post.dart';
+import 'package:pet_house/utils/utils.dart';
 
 class PostScreen extends StatefulWidget {
   final String id;
@@ -12,10 +13,10 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   String? id;
-  _PostScreenState({this.id});
+  bool? like = false;
+  _PostScreenState({this.id, this.like});
 
   Future<Post?> getPostById(id) async {
-    // TODO received id of post as prop
     final docPost = FirebaseFirestore.instance.collection('posts').doc(id);
     final snapshot = await docPost.get();
 
@@ -58,8 +59,13 @@ class _PostScreenState extends State<PostScreen> {
             children: [
               InkWell(
                 child: Chip(
-                  label: Text('Mammals'),
-                  avatar: CircleAvatar(child: Icon(Icons.pets)),
+                  backgroundColor: AppTheme.colors.primary,
+                  label: Text(post.animalClass),
+                  avatar: CircleAvatar(
+                    child: Icon(Icons.pets),
+                    backgroundColor: AppTheme.colors.primaryFontColor,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
               InkWell(
@@ -93,11 +99,37 @@ class _PostScreenState extends State<PostScreen> {
                   ),
                   Padding(
                       padding: EdgeInsets.only(left: 4),
-                      child: Text('Username'))
+                      child: Text(
+                        'Username',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))
                 ],
               ),
               Column(
-                children: [Icon(Icons.pets_outlined), Text('Like')],
+                children: [
+                  like!
+                      ? InkWell(
+                          radius: 8,
+                          child: Icon(
+                            Icons.pets,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              like = !like!;
+                            });
+                          },
+                        )
+                      : InkWell(
+                          radius: 8,
+                          child: Image.asset('assets/images/pawprint2.png'),
+                          onTap: () {
+                            setState(() {
+                              like = !like!;
+                            });
+                          },
+                        ),
+                  Text('Like')
+                ],
               )
             ],
           ),
