@@ -73,105 +73,116 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(0),
-        child: Center(
-            child: Container(
-          child: Column(
-            children: [
-              image != null
-                  ? ImageWidget(
-                      path: image!,
-                      onClicked: () async {
-                        pickImage(ImageSource.gallery);
-                      })
-                  : ImageWidget(
-                      path: user.imagePath,
-                      onClicked: () async {
-                        pickImage(ImageSource.gallery);
-                      }),
-              Container(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Text(
-                      user.username,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      user.bio,
-                      style:
-                          TextStyle(color: AppTheme.colors.secondaryFontColor),
-                    )
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                  onPressed: () async {},
-                  child: Text('Edit'),
-                  style: ElevatedButton.styleFrom(
-                      primary: AppTheme.colors.primaryFontColor,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30)))),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildButtonColumn('Post', '20'),
-                  _buildButtonColumn('Likes', '50'),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                padding: EdgeInsets.all(4),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color:
-                            AppTheme.colors.primaryFontColor.withOpacity(0.05),
-                        spreadRadius: 2,
-                        blurRadius: 5),
-                    BoxShadow(
-                        color: AppTheme.colors.primary.withOpacity(1),
-                        spreadRadius: 2,
-                        blurRadius: 0,
-                        offset: Offset(0, 4))
-                  ],
-                  // border: Border(bottom: BorderSide(width: 2)),
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30.0)),
-                ),
-                child: Column(mainAxisSize: MainAxisSize.max, children: [
-                  Text(
-                    'My post',
-                    style: TextStyle(
-                        color: AppTheme.colors.secondaryFontColor,
-                        fontSize: 12),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.newspaper,
-                      color: AppTheme.colors.primaryFontColor,
-                    ),
-                  ),
-                ]),
-              ),
-              Flexible(
-                child: userPosts(),
-              )
-            ],
-          ),
-        )),
-      ),
+    return NestedScrollView(
+      headerSliverBuilder: (context, _) {
+        return [
+          SliverList(
+              delegate: SliverChildListDelegate([profileHeaderWidget(context)]))
+        ];
+      },
+      body: profileBodyWidget(),
     );
   }
 
-  Widget userPosts() {
+  Widget profileHeaderWidget(BuildContext context) {
+    return Column(
+      children: [
+        image != null
+            ? Container(
+                margin: EdgeInsets.only(top: 16),
+                child: ImageWidget(
+                    path: image!,
+                    onClicked: () async {
+                      pickImage(ImageSource.gallery);
+                    }),
+              )
+            : Container(
+                margin: EdgeInsets.only(top: 16),
+                child: ImageWidget(
+                    path: user.imagePath,
+                    onClicked: () async {
+                      pickImage(ImageSource.gallery);
+                    }),
+              ),
+        Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Text(
+                user.username,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                user.bio,
+                style: TextStyle(color: AppTheme.colors.secondaryFontColor),
+              )
+            ],
+          ),
+        ),
+        ElevatedButton(
+            onPressed: () async {},
+            child: Text('Edit'),
+            style: ElevatedButton.styleFrom(
+                primary: AppTheme.colors.primaryFontColor,
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30)))),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildButtonColumn('Post', '20'),
+            _buildButtonColumn('Likes', '50'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget profileBodyWidget() {
+    return Column(
+      children: [postTitleWidget(), Expanded(child: userPostsWidget())],
+    );
+  }
+
+  Widget postTitleWidget() {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      padding: EdgeInsets.all(4),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              color: AppTheme.colors.primaryFontColor.withOpacity(0.05),
+              spreadRadius: 2,
+              blurRadius: 5),
+          BoxShadow(
+              color: AppTheme.colors.primary.withOpacity(1),
+              spreadRadius: 2,
+              blurRadius: 0,
+              offset: Offset(0, 4))
+        ],
+        // border: Border(bottom: BorderSide(width: 2)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+      ),
+      child: Column(mainAxisSize: MainAxisSize.max, children: [
+        Text(
+          'My post',
+          style: TextStyle(
+              color: AppTheme.colors.secondaryFontColor, fontSize: 12),
+        ),
+        Container(
+          padding: EdgeInsets.all(4),
+          child: Icon(
+            Icons.newspaper,
+            color: AppTheme.colors.primaryFontColor,
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget userPostsWidget() {
     return Container(
       margin: EdgeInsets.only(top: 8),
       child: MasonryGridView.count(
