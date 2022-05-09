@@ -6,22 +6,24 @@ import 'package:pet_house/layout/default_layout.dart';
 import 'package:pet_house/screens/category.dart';
 import 'package:pet_house/screens/home.dart';
 import 'package:pet_house/utils/utils.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 // void main() {
 //   runApp(const MyApp());
 // }
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +40,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       // home: HomeScreen(),
 
-      home: Category(),
+      home: DefaultLayout(),
+      navigatorObservers: [BotToastNavigatorObserver()],
+      builder: BotToastInit(),
     );
   }
 }
