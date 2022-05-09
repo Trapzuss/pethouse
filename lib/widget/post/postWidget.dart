@@ -14,6 +14,7 @@ class postWidget extends StatefulWidget {
 
 class _postWidgetState extends State<postWidget> {
   final List<IconData> tags = [Icons.pets];
+  final List collections = ['Dog', 'Exotic', 'Cute Reference'];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class _postWidgetState extends State<postWidget> {
                     padding: EdgeInsets.all(8),
                     child: InkWell(
                       child: Icon(
-                        Icons.more_horiz,
+                        Icons.bookmark_add,
                         color: Colors.white,
                       ),
                       onTap: () => {showCollectionModal(context)},
@@ -65,23 +66,42 @@ class _postWidgetState extends State<postWidget> {
           builder: (context) => CupertinoActionSheet(
                 actions: [
                   CupertinoActionSheetAction(
-                      onPressed: () => print('yes'),
-                      child: Text('Add to Collection')),
+                      onPressed: () {
+                        print('yes');
+                        Navigator.pop(context);
+                      },
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(collections[index]),
+                              onTap: () {
+                                print('Add successfully');
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const Divider(),
+                          itemCount: collections.length)),
                 ],
               ));
     } else {
       return showModalBottomSheet(
           context: context,
-          builder: (context) => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.bookmark_add),
-                    title: Text('Add to Collection'),
-                    onTap: () => print('Add successfully'),
-                  ),
-                ],
-              ));
+          builder: (context) => ListView.separated(
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.bookmark_add),
+                  title: Text(collections[index]),
+                  onTap: () {
+                    print('Add successfully');
+                    Navigator.pop(context);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+              itemCount: collections.length));
     }
   }
 }
