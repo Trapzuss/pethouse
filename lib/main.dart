@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
               .copyWith(primary: AppTheme.colors.primary),
           appBarTheme: AppBarTheme(foregroundColor: Color(0xFF263238))),
       title: 'Flutter Demo',
-      home: Edit_Profile(),
+      home: DefaultLayout(),
       navigatorObservers: [BotToastNavigatorObserver()],
       builder: BotToastInit(),
 

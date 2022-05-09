@@ -1,13 +1,63 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/screens/login.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
 
-  final formKey = GlobalKey<FormState>();
-  // final Future<FirebaseApp> firebase = Firebase.initializeApp();
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
+
+  String? _validateEmail(String? value) {
+    RegExp emailRegex = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$', caseSensitive: false);
+    if (value == null || value.isEmpty) {
+      return 'Required';
+    } else if (!emailRegex.hasMatch(value)) {
+      return 'Invalid email address';
+    }
+    return null;
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Required';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Required';
+    } else if (value.length < 6) {
+      return 'Password must be longer than 6 characters';
+    }
+    return null;
+  }
+
+  String? _validateConfirm(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Required';
+    } else if (value != _passwordController.text) {
+      return 'Password does not match';
+    }
+    return null;
+  }
+
+  Future<void> _submitForm(BuildContext context) async {
+    final String _email = _emailController.text;
+    final String _name = _nameController.text;
+    final String _password = _passwordController.text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,8 +179,7 @@ class RegisterScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xff2979ff)
-                          ),
+                              primary: Color(0xff2979ff)),
                           onPressed: () {},
                           child: const Text('SIGN UP'),
                         ),
@@ -165,26 +214,5 @@ class RegisterScreen extends StatelessWidget {
         ),
       ),
     );
-    //   future: firebase,
-    //   builder: (context, snapshot){
-    //     if(snapshot.hasError){
-    //       return Scaffold(
-    //         appBar: AppBar(title: Text("Error"),
-    //       ),
-    //       body: Center(child: Text("${snapshot.error}"),
-    //       ),
-    //       );
-    //     }
-    //     if(snapshot.connectionState == ConnectionState.done){
-    //       return Scaffold(
-
-    // );
-    //     }
-    //     return Scaffold(
-    //       body: Center(
-    //         child: CircularProgressIndicator.adaptive(),
-    //       ),
-    //       );
-    // }
   }
 }
