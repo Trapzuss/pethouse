@@ -64,6 +64,9 @@ class Forgot extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xff2979ff)
+                          ),
                           onPressed: () {},
                           child: const Text('SUBMIT'),
                         ),

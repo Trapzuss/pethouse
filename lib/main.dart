@@ -3,6 +3,7 @@ import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/layout/default_layout.dart';
+import 'package:pet_house/screens/category.dart';
 import 'package:pet_house/screens/home.dart';
 import 'package:pet_house/utils/utils.dart';
 
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       // home: HomeScreen(),
 
-      home: DefaultLayout(),
+      home: Category(),
     );
   }
 }

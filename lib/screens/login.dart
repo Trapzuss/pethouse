@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/screens/feed.dart';
 import 'package:pet_house/screens/forgot.dart';
 import 'register.dart';
 
@@ -142,7 +143,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xff2979ff)
+                          ) ,
+                          onPressed: () {
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Feed();
+                          }));
+                          },
                           child: const Text('LOG IN'),
                         ),
                       )),
