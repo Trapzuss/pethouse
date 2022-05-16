@@ -1,7 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_house/models/post.dart';
+import 'package:pet_house/screens/posts/updatePost.dart';
+import 'package:pet_house/services/authentication_services.dart';
+import 'package:pet_house/services/post_services.dart';
+import 'package:pet_house/services/user_services.dart';
 import 'package:pet_house/utils/utils.dart';
+import 'package:pet_house/widget/collection/collectionModal.dart';
+import 'package:pet_house/widget/common/emptyWidget.dart';
+import 'package:like_button/like_button.dart';
 
 class PostScreen extends StatefulWidget {
   final String id;
@@ -14,30 +21,48 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   String? id;
   bool? like = false;
+  Future? _getPostWithUser;
   _PostScreenState({this.id, this.like});
 
-  Future<Post?> getPostById(id) async {
-    final docPost = FirebaseFirestore.instance.collection('posts').doc(id);
-    final snapshot = await docPost.get();
+  Future getPostWithUser() async {
+    final future1 = await PostServices().getPostById(id);
+    final future2 = await UserServices().getUserByUid(future1!.ownerId);
+    final postWithUser = {...future2.toJson(), ...future1.toJson()};
+    // print(PostWithUser);
+    return postWithUser;
+  }
 
-    if (snapshot.exists) {
-      return Post.fromJson(snapshot.data()!);
-    }
+  Future<bool> onFavoriteButtonTap(bool isLiked) async {
+    String action = isLiked == false ? 'add' : 'remove';
+    await PostServices()
+        .onChangeFavorites(action, id!, AuthenticationService().getUid);
+
+    return !isLiked;
+  }
+
+  @override
+  void initState() {
+    _getPostWithUser = getPostWithUser();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Post'),
-      ),
-      body: FutureBuilder<Post?>(
-        future: getPostById(id),
+          title: Text('Post'),
+          leading: BackButton(
+            onPressed: (() {
+              Navigator.pop(context, true);
+            }),
+          )),
+      body: FutureBuilder(
+        future: _getPostWithUser,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final post = snapshot.data;
             return post == null
-                ? Center(child: Text('No Post'))
+                ? Center(child: EmptyPostsTypeSomethingWrong())
                 : postFull(post);
           } else {
             return Center(child: CircularProgressIndicator());
@@ -47,7 +72,12 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  Widget postFull(Post post) {
+  Widget postFull(dynamic post) {
+    List favoritesList = post['favorites'];
+    bool isLikedByUser = favoritesList
+        .contains(AuthenticationService().getUid.toString().trim());
+    bool isOwner =
+        post['ownerId'] == AuthenticationService().getUid.toString().trim();
     return SafeArea(
         child: ListView(
       shrinkWrap: true,
@@ -59,24 +89,57 @@ class _PostScreenState extends State<PostScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
-                child: Chip(
-                  backgroundColor: AppTheme.colors.primary,
-                  label: Text(post.animalClass),
-                  avatar: CircleAvatar(
-                    child: Icon(Icons.pets),
-                    backgroundColor: AppTheme.colors.primaryFontColor,
-                    foregroundColor: Colors.white,
+                child: Transform(
+                  transform: new Matrix4.identity()..scale(1.1),
+                  child: Chip(
+                    backgroundColor: AppTheme.colors.primary,
+                    label: Text(post['animalClass']),
+                    avatar: CircleAvatar(
+                      child: Icon(Icons.pets),
+                      backgroundColor: AppTheme.colors.primaryFontColor,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ),
               ),
-              InkWell(
-                child: Icon(Icons.bookmark_border_outlined),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    child: InkWell(
+                      child: Icon(Icons.bookmark_add_outlined),
+                      onTap: () {
+                        showCollectionModal(context, post['postId']);
+                      },
+                    ),
+                  ),
+                  isOwner
+                      ? Container(
+                          margin: EdgeInsets.symmetric(horizontal: 4),
+                          child: InkWell(
+                            child: Icon(Icons.edit_note_outlined),
+                            onTap: () async {
+                              bool? res = await Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return updatePostScreen(post: post);
+                              }));
+                              if (res!) {
+                                setState(() {
+                                  _getPostWithUser = getPostWithUser();
+                                });
+                              }
+                              // print(res);
+                            },
+                          ),
+                        )
+                      : Container()
+                ],
               )
             ],
           ),
         ),
         Image.network(
-          post.imageUrl,
+          post['imageUrl'],
           fit: BoxFit.contain,
         ),
         Padding(
@@ -87,25 +150,44 @@ class _PostScreenState extends State<PostScreen> {
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.person),
+                    radius: 16,
+                    foregroundColor: Colors.white,
+                    backgroundColor: AppTheme.colors.primaryFontColor,
+                    child: post['urlPictureProfile'] != ''
+                        ? ClipOval(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                child: Image.network(
+                                  post['urlPictureProfile'],
+                                  fit: BoxFit.cover,
+                                  width: 128,
+                                  height: 128,
+                                ),
+                              ),
+                            ),
+                          )
+                        // ClipRRect(
+                        //     child: post['urlPictureProfile'],
+                        //   )
+                        : Icon(Icons.person),
                   ),
                   Padding(
                       padding: EdgeInsets.only(left: 4),
                       child: Text(
-                        'Username',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        post['username'],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ))
                 ],
               ),
               Column(
                 children: [
-                  InkWell(
-                    radius: 8,
-                    child: Icon(
-                      Icons.pets,
-                    ),
-                  ),
-                  Text('Like')
+                  LikeButton(
+                    isLiked: isLikedByUser,
+                    onTap: onFavoriteButtonTap,
+                    likeCount: favoritesList.length,
+                  )
                 ],
               )
             ],
@@ -118,12 +200,12 @@ class _PostScreenState extends State<PostScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                post.title,
+                post['title'],
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               Text(
-                post.description,
+                post['description'],
                 textAlign: TextAlign.center,
               )
             ],
