@@ -24,6 +24,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:pet_house/widget/common/emptyWidget.dart';
 import 'package:pet_house/widget/post/postWidget.dart';
 import 'package:path/path.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -76,12 +77,12 @@ class _ProfileState extends State<Profile> {
   }
 
   Future submitEditProfile(
-      String username, String bio, File? uploadFile) async {
+      String username, String bio, File? uploadFile, UserModel user) async {
     UploadTask? task;
     final isValid = formKey.currentState!.validate();
     String urlDownload = '';
     if (!isValid) return;
-
+    var close = BotToast.showLoading();
     if (uploadFile != null) {
       final fileName = '${basename(uploadFile.path)}${DateTime.now()}';
       final destination = "files/$fileName";
@@ -89,9 +90,12 @@ class _ProfileState extends State<Profile> {
       if (task == null) return;
       final snapshot = await task.whenComplete(() {});
       urlDownload = await snapshot.ref.getDownloadURL();
+    } else {
+      urlDownload = user.urlPictureProfile;
     }
 
     await UserServices().onSubmitProfile(username, bio, urlDownload);
+    close();
   }
 
   Future<UserModel> retrievedUserData() async {
@@ -161,12 +165,25 @@ class _ProfileState extends State<Profile> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    child: Image.network(
-                      userData.urlPictureProfile,
+                    child: CachedNetworkImage(
                       fit: BoxFit.cover,
                       width: 128,
                       height: 128,
+                      imageUrl: userData.urlPictureProfile,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => Center(
+                        child: CircularProgressIndicator(
+                            value: downloadProgress.progress),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          Center(child: Icon(Icons.error)),
                     ),
+                    // Image.network(
+                    //   userData.urlPictureProfile,
+                    //   fit: BoxFit.cover,
+                    //   width: 128,
+                    //   height: 128,
+                    // ),
                   ),
                 ),
               )

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,18 +34,35 @@ class ImageWidget extends StatelessWidget {
 
     if (path.runtimeType == String) {
       final image = NetworkImage(path);
-      // return ClipOval(
-      //   child: Material(
-      //     color: Colors.transparent,
-      //     child: Ink.image(
-      //       image: image,
-      //       fit: BoxFit.cover,
-      //       width: 128,
-      //       height: 128,
-      //       child: InkWell(onTap: onClicked),
-      //     ),
-      //   ),
-      // );
+      if (image != null) {
+        return ClipOval(
+          child: Material(
+            color: Colors.transparent,
+            child:
+                // CachedNetworkImage(
+                //   fit: BoxFit.cover,
+                //   width: 128,
+                //   height: 128,
+                //   imageUrl: image.toString(),
+                //   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                //       Center(
+                //     child:
+                //         CircularProgressIndicator(value: downloadProgress.progress),
+                //   ),
+                //   errorWidget: (context, url, error) =>
+                //       Center(child: Icon(Icons.error)),
+                // ),
+
+                Ink.image(
+              image: image,
+              fit: BoxFit.cover,
+              width: 128,
+              height: 128,
+              child: InkWell(onTap: onClicked),
+            ),
+          ),
+        );
+      }
       return GestureDetector(
           onTap: () {
             onClicked();

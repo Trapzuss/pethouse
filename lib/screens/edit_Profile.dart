@@ -93,7 +93,8 @@ class _editProfileState extends State<editProfile> {
                       await widget.submitEditProfile(
                           widget.usernameController.text,
                           widget.bioController.text,
-                          image);
+                          image,
+                          widget.user);
                       BotToast.showNotification(
                         leading: (cancel) => SizedBox.fromSize(
                             size: const Size(40, 40),
