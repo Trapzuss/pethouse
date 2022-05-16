@@ -23,7 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     RegExp emailRegex = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$',
         caseSensitive: false);
     if (value == null || value.isEmpty) {
-      return 'Required';
+      return 'Email is required';
     } else if (!emailRegex.hasMatch(value)) {
       return 'Invalid email address';
     }
@@ -32,14 +32,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Required';
+      return 'Username is required';
     }
     return null;
   }
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Required';
+      return 'Password is required';
     } else if (value.length < 6) {
       return 'Password must be longer than 6 characters';
     }
