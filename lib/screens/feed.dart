@@ -6,10 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/models/post.dart';
 import 'package:pet_house/screens/posts/newPost.dart';
 import 'package:pet_house/screens/posts/post.dart';
+import 'package:pet_house/services/post_services.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/common/gradientButtonWidget.dart';
+import 'package:pet_house/widget/post/buildPostsGridView.dart';
 import 'package:pet_house/widget/post/postWidget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import '../widget/common/emptyWidget.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -19,51 +23,26 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  Stream<List<Post>> getPosts() => FirebaseFirestore.instance
-      .collection('posts')
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
           margin: EdgeInsets.only(top: 8),
           padding: EdgeInsets.all(4),
-          child: StreamBuilder<List<Post>>(
-            stream: getPosts(),
+          child: StreamBuilder<List<PostModel>>(
+            stream: PostServices().getPosts(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Text('Something went wrong! ${snapshot.error}');
+                return EmptyPostsTypeError(error: snapshot.error.toString());
               } else if (snapshot.hasData) {
+                // print(snapshot.data);
                 if (snapshot.data!.isEmpty) {
-                  return Center(
-                    heightFactor: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          child: EmptyImage(),
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                        ),
-                        Text('Oops!',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.colors.secondaryFontColor)),
-                        Text('no post found',
-                            style: TextStyle(
-                                color: AppTheme.colors.secondaryFontColor)),
-                        gradientButton(
-                          text: 'New post',
-                        )
-                      ],
-                    ),
-                  );
+                  return EmptyPostsTypeEmpty();
                 }
                 final posts = snapshot.data!;
-                return buildPostsGridView(posts);
+                return PostsGridView(
+                  posts: posts,
+                );
               } else {
                 return Center(
                     child: SpinKitDancingSquare(
@@ -75,27 +54,28 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Widget buildPostsGridView(List<Post> posts) => MasonryGridView.count(
-        crossAxisCount: 2,
-        itemCount: posts.length,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        // shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return InkWell(
-            child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: postWidget(path: posts[index].imageUrl)),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return PostScreen(
-                  id: posts[index].id,
-                );
-              }));
-            },
-          );
-        },
-      );
+  // Widget buildPostsGridView(List<PostModel> posts) => MasonryGridView.count(
+  //       crossAxisCount: 2,
+  //       itemCount: posts.length,
+  //       mainAxisSpacing: 12,
+  //       crossAxisSpacing: 12,
+  //       // shrinkWrap: true,
+  //       itemBuilder: (context, index) {
+  //         return InkWell(
+  //           child: Container(
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(8.0),
+  //               ),
+  //               child: postWidget(
+  //                   path: posts[index].imageUrl, postId: posts[index].postId)),
+  //           onTap: () {
+  //             Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //               return PostScreen(
+  //                 id: posts[index].postId,
+  //               );
+  //             }));
+  //           },
+  //         );
+  //       },
+  //     );
 }
