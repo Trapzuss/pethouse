@@ -1,18 +1,29 @@
-// import 'dart:ffi';
-import 'dart:math';
+// ignore_for_file: unnecessary_new
+
+import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pet_house/api/firebase_api.dart';
+import 'package:pet_house/models/post.dart';
+import 'package:pet_house/models/user.dart';
 import 'package:pet_house/screens/edit_profile.dart';
 import 'package:pet_house/screens/posts/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_house/services/authentication_services.dart';
-import 'package:pet_house/utils/user_preferences.dart';
+import 'package:pet_house/services/post_services.dart';
+import 'package:pet_house/services/user_services.dart';
+
 import 'dart:io';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/common/ImageWidget.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:pet_house/widget/common/emptyWidget.dart';
+import 'package:pet_house/widget/post/postWidget.dart';
+import 'package:path/path.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -22,26 +33,16 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final user = UserPreferences.mockUser;
-  List img = [
-    'https://www.familyeducation.com/sites/default/files/fe_slideshow/2008_03/Chipmunk_H.jpg',
-  ];
-  File? image;
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      final imageTemporary = File(image.path);
-      setState(() {
-        // print(imageTemporary);
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
+  // final user = UserPreferences.mockUser;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
+  int amountOfPosts = 0;
+  int amountOfFavorites = 0;
+  Future? _retrievedUserData;
 
-  Future signOutCustom() async {
+  Future signOutCustom(context) async {
+    // ignore: avoid_single_cascade_in_expression_statements
     AwesomeDialog(
       context: context,
       dialogType: DialogType.WARNING,
@@ -74,20 +75,68 @@ class _ProfileState extends State<Profile> {
     )..show();
   }
 
+  Future submitEditProfile(
+      String username, String bio, File? uploadFile) async {
+    UploadTask? task;
+    final isValid = formKey.currentState!.validate();
+    String urlDownload = '';
+    if (!isValid) return;
+
+    if (uploadFile != null) {
+      final fileName = '${basename(uploadFile.path)}${DateTime.now()}';
+      final destination = "files/$fileName";
+      task = FirebaseApi.uploadFile(destination, uploadFile);
+      if (task == null) return;
+      final snapshot = await task.whenComplete(() {});
+      urlDownload = await snapshot.ref.getDownloadURL();
+    }
+
+    await UserServices().onSubmitProfile(username, bio, urlDownload);
+  }
+
+  Future<UserModel> retrievedUserData() async {
+    final UserModel userData = await new UserServices().getCurrentUser();
+
+    usernameController.text = userData.username;
+    bioController.text = userData.bio;
+    amountOfPosts =
+        await PostServices().getAmountOfPostsOfUserByUid(userData.uid);
+    amountOfFavorites =
+        await PostServices().getAmountOfFavoritesOfUserByUid(userData.uid);
+    return userData;
+  }
+
+  @override
+  void initState() {
+    _retrievedUserData = retrievedUserData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (context, _) {
-        return [
-          SliverList(
-              delegate: SliverChildListDelegate([profileHeaderWidget(context)]))
-        ];
+    return FutureBuilder<dynamic>(
+      future: _retrievedUserData,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final UserModel userData = snapshot.data!;
+          return NestedScrollView(
+            headerSliverBuilder: (context, _) {
+              return [
+                SliverList(
+                    delegate: SliverChildListDelegate(
+                        [profileHeaderWidget(context, userData)]))
+              ];
+            },
+            body: profileBodyWidget(userData),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
-      body: profileBodyWidget(),
     );
   }
 
-  Widget profileHeaderWidget(BuildContext context) {
+  Widget profileHeaderWidget(BuildContext context, UserModel userData) {
     return Column(
       children: [
         Container(
@@ -101,39 +150,59 @@ class _ProfileState extends State<Profile> {
                   color: Colors.red,
                 ),
                 onTap: () {
-                  signOutCustom();
+                  signOutCustom(context);
                 },
               )
             ],
           ),
         ),
-        image != null
-            ? Container(
-                margin: EdgeInsets.only(top: 16),
-                child: ImageWidget(
-                    path: image!,
-                    onClicked: () async {
-                      pickImage(ImageSource.gallery);
-                    }),
+        (userData.urlPictureProfile != null && userData.urlPictureProfile != '')
+            ? ClipOval(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    child: Image.network(
+                      userData.urlPictureProfile,
+                      fit: BoxFit.cover,
+                      width: 128,
+                      height: 128,
+                    ),
+                  ),
+                ),
               )
-            : Container(
-                margin: EdgeInsets.only(top: 16),
-                child: ImageWidget(
-                    path: user.imagePath,
-                    onClicked: () async {
-                      pickImage(ImageSource.gallery);
-                    }),
+            : ClipOval(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                      child: CircleAvatar(
+                    radius: 64,
+                    backgroundColor: AppTheme.colors.primaryFontColor,
+                    foregroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 96,
+                    ),
+                  )
+
+                      // Image.network(
+                      //   user.urlPictureProfile,
+                      //   fit: BoxFit.cover,
+                      //   width: 128,
+                      //   height: 128,
+                      // ),
+                      ),
+                ),
               ),
         Container(
           padding: EdgeInsets.all(8),
           child: Column(
             children: [
               Text(
-                user.username,
+                userData.username,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(
-                user.bio,
+                userData.bio,
                 style: TextStyle(color: AppTheme.colors.secondaryFontColor),
               )
             ],
@@ -141,9 +210,21 @@ class _ProfileState extends State<Profile> {
         ),
         ElevatedButton(
             onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return editProfile();
+              bool res = await Navigator.push(context,
+                  new MaterialPageRoute(builder: (context) {
+                return new editProfile(
+                    formKey: formKey,
+                    usernameController: usernameController,
+                    bioController: bioController,
+                    submitEditProfile: submitEditProfile,
+                    user: userData);
               }));
+              // log('$value');
+              if (res) {
+                setState(() {
+                  _retrievedUserData = retrievedUserData();
+                });
+              }
             },
             child: Text('Edit'),
             style: ElevatedButton.styleFrom(
@@ -154,15 +235,15 @@ class _ProfileState extends State<Profile> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildButtonColumn('Post', '20'),
-            _buildButtonColumn('Likes', '50'),
+            _buildButtonColumn('Posts', amountOfPosts),
+            _buildButtonColumn('Likes', amountOfFavorites),
           ],
         ),
       ],
     );
   }
 
-  Widget profileBodyWidget() {
+  Widget profileBodyWidget(userData) {
     return Column(
       children: [postTitleWidget(), Expanded(child: userPostsWidget())],
     );
@@ -207,42 +288,59 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget userPostsWidget() {
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      child: MasonryGridView.count(
-        crossAxisCount: 2,
-        itemCount: img.length,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        // shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return InkWell(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  img[index],
-                  fit: BoxFit.fill,
-                ),
-              ),
+    // return ElevatedButton(
+    //     onPressed: () {
+    //       PostServices().getUserPosts(AuthenticationService().getUid);
+    //     },
+    //     child: Text('yes'));
+    return StreamBuilder<List<PostModel>>(
+      stream: PostServices().getUserPosts(AuthenticationService().getUid),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong! ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          final posts = snapshot.data;
+          if (snapshot.data!.isEmpty) {
+            return Center(child: EmptyPostsTypeEmpty());
+          }
+          return Container(
+            margin: EdgeInsets.only(top: 8),
+            child: MasonryGridView.count(
+              crossAxisCount: 2,
+              itemCount: posts!.length,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              // shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  child: postWidget(
+                      path: posts[index].imageUrl, postId: posts[index].postId),
+                  onTap: () async {
+                    bool? res = await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PostScreen(id: posts[index].postId);
+                    }));
+
+                    if (res!) {
+                      setState(() {
+                        _retrievedUserData = retrievedUserData();
+                      });
+                    }
+
+                    // print('go to own post in profile');
+                  },
+                );
+              },
             ),
-            onTap: () {
-              // TODO get myPost then send id as prop to PostScreen
-              // Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //   return PostScreen();
-              // }));
-              print('go to own post in profile');
-            },
           );
-        },
-      ),
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
-  Column _buildButtonColumn(String label, String text) {
+  Column _buildButtonColumn(String label, int text) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -256,7 +354,7 @@ class _ProfileState extends State<Profile> {
           ),
         ),
         Text(
-          text,
+          text.toString(),
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
