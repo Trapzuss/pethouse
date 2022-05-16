@@ -18,8 +18,8 @@ class _gradientButtonState extends State<gradientButton> {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         child: SizedBox(
-          width: 120,
           height: 35,
+          width: (MediaQuery.of(context).size.width / 2),
           child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
@@ -34,10 +34,13 @@ class _gradientButtonState extends State<gradientButton> {
               //       blurRadius: 5) //blur radius of shadow
               // ]
             ),
-            child: Center(
-              child: Text(
-                widget.text,
-                style: TextStyle(color: Colors.white, fontSize: 14),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Center(
+                child: Text(
+                  widget.text,
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
               ),
             ),
           ),
