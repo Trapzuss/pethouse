@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_house/widget/collection/collectionModal.dart';
 
 class postWidget extends StatefulWidget {
   final String? path;
-  const postWidget({Key? key, required this.path}) : super(key: key);
+  final String? postId;
+  const postWidget({Key? key, required this.path, required this.postId})
+      : super(key: key);
 
   @override
   State<postWidget> createState() => _postWidgetState();
@@ -14,7 +17,6 @@ class postWidget extends StatefulWidget {
 
 class _postWidgetState extends State<postWidget> {
   final List<IconData> tags = [Icons.pets];
-  final List collections = ['Dog', 'Exotic', 'Cute Reference'];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,8 @@ class _postWidgetState extends State<postWidget> {
                         Icons.bookmark_add,
                         color: Colors.white,
                       ),
-                      onTap: () => {showCollectionModal(context)},
+                      onTap: () =>
+                          {showCollectionModal(context, widget.postId!)},
                     ),
                   )
                 ],
@@ -57,51 +60,5 @@ class _postWidgetState extends State<postWidget> {
         ],
       ),
     );
-  }
-
-  Future showCollectionModal(BuildContext context) async {
-    if (Platform.isIOS) {
-      return showCupertinoModalPopup(
-          context: context,
-          builder: (context) => CupertinoActionSheet(
-                actions: [
-                  CupertinoActionSheetAction(
-                      onPressed: () {
-                        print('yes');
-                        Navigator.pop(context);
-                      },
-                      child: ListView.separated(
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(collections[index]),
-                              onTap: () {
-                                print('Add successfully');
-                                Navigator.pop(context);
-                              },
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const Divider(),
-                          itemCount: collections.length)),
-                ],
-              ));
-    } else {
-      return showModalBottomSheet(
-          context: context,
-          builder: (context) => ListView.separated(
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.bookmark_add),
-                  title: Text(collections[index]),
-                  onTap: () {
-                    print('Add successfully');
-                    Navigator.pop(context);
-                  },
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-              itemCount: collections.length));
-    }
   }
 }
