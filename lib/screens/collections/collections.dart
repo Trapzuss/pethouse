@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -130,14 +131,32 @@ class _collectionsScreenState extends State<collectionsScreen> {
                                     collections[index].postsId.length
                                 ? 1
                                 : 0.6,
-                            child: Image.network(
-                              post == null ? AppTheme.src.empty : post.imageUrl,
+                            child: CachedNetworkImage(
                               width: (MediaQuery.of(context).size.width / 2) -
                                   (item.key * 40),
                               height: 160,
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
+                              imageUrl: post == null
+                                  ? AppTheme.src.empty
+                                  : post.imageUrl,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Center(
+                                child: CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Center(child: Icon(Icons.error)),
                             ),
+
+                            // Image.network(
+                            //   post == null ? AppTheme.src.empty : post.imageUrl,
+                            //   width: (MediaQuery.of(context).size.width / 2) -
+                            //       (item.key * 40),
+                            //   height: 160,
+                            //   fit: BoxFit.cover,
+                            //   alignment: Alignment.center,
+                            // ),
                           ),
                         ),
                       );

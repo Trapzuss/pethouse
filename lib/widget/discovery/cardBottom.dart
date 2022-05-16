@@ -33,8 +33,8 @@ class card_Bottom extends StatelessWidget {
           child: GridView.count(
             crossAxisCount: 2,
             primary: false,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 15.0,
+            crossAxisSpacing: 0.0,
+            mainAxisSpacing: 0.0,
             childAspectRatio: 1.5,
             children: <Widget>[
               _typeCard('Fishs', 'assets/images/categories/fishs.png', context),
@@ -57,9 +57,11 @@ class card_Bottom extends StatelessWidget {
   }
 
   Widget _typeCard(String name, String imgPath, context) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(top: 15.0, bottom: 5.0, left: 5.0, right: 5.0),
+    return Container(
+      padding: const EdgeInsets.only(
+        top: 15.0,
+      ),
+      margin: const EdgeInsets.only(left: 3.0, right: 3),
       child: InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -87,6 +89,10 @@ class card_Bottom extends StatelessWidget {
                   width: double.infinity,
                   height: 87.0,
                   decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2,
+                        color:
+                            AppTheme.colors.primaryFontColor.withOpacity(0.9)),
                     borderRadius: BorderRadius.circular(8.0),
                     image: DecorationImage(
                       image: AssetImage(imgPath),
@@ -99,12 +105,18 @@ class card_Bottom extends StatelessWidget {
                       filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                       child: Container(
                           alignment: Alignment.center,
-                          color: AppTheme.colors.primary.withOpacity(0.1),
+                          color: AppTheme.colors.primary.withOpacity(0.7),
                           child: Text(name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 241, 241, 241)))),
+                                  color: Color.fromARGB(255, 241, 241, 241),
+                                  shadows: [
+                                    Shadow(
+                                        color: Color.fromARGB(74, 51, 51, 51),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 2))
+                                  ]))),
                     ),
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_house/widget/collection/collectionModal.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class postWidget extends StatefulWidget {
   final String? path;
@@ -31,13 +32,26 @@ class _postWidgetState extends State<postWidget> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    widget.path!,
-                    fit: BoxFit.fill,
+                child: CachedNetworkImage(
+                  imageUrl: widget.path!,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Center(
+                    child: CircularProgressIndicator(
+                        value: downloadProgress.progress),
                   ),
+                  errorWidget: (context, url, error) =>
+                      Center(child: Icon(Icons.error)),
                 ),
+
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(8.0),
+                //   // https://miro.medium.com/max/1360/1*oggxLUdueZBH5S8XN9kccg.gif
+
+                //   child: Image.network(
+                //     widget.path!,
+                //     fit: BoxFit.fill,
+                //   ),
+                // ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

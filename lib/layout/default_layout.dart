@@ -6,7 +6,7 @@ import 'package:pet_house/screens/discovery/discovery.dart';
 import 'package:pet_house/screens/feed.dart';
 import 'package:pet_house/screens/posts/newPost.dart';
 import 'package:pet_house/screens/profile.dart';
-import 'package:pet_house/screens/discovery/search.dart';
+
 import 'package:pet_house/services/collection_services.dart';
 
 import 'package:pet_house/utils/utils.dart';

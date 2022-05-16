@@ -14,8 +14,8 @@ class PostsGridView extends StatelessWidget {
       shrinkWrap: true,
       crossAxisCount: 2,
       itemCount: posts.length,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
       // shrinkWrap: true,
       itemBuilder: (context, index) {
         return InkWell(

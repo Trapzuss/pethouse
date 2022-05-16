@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_house/models/post.dart';
@@ -123,7 +124,7 @@ class _PostScreenState extends State<PostScreen> {
                                   MaterialPageRoute(builder: (_) {
                                 return updatePostScreen(post: post);
                               }));
-                              if (res!) {
+                              if (res != null) {
                                 setState(() {
                                   _getPostWithUser = getPostWithUser();
                                 });
@@ -138,10 +139,19 @@ class _PostScreenState extends State<PostScreen> {
             ],
           ),
         ),
-        Image.network(
-          post['imageUrl'],
+        CachedNetworkImage(
           fit: BoxFit.contain,
+          imageUrl: post['imageUrl'],
+          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+            child: CircularProgressIndicator(value: downloadProgress.progress),
+          ),
+          errorWidget: (context, url, error) =>
+              Center(child: Icon(Icons.error)),
         ),
+        // Image.network(
+        //   post['imageUrl'],
+        //   fit: BoxFit.contain,
+        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
