@@ -33,18 +33,31 @@ class ImageWidget extends StatelessWidget {
 
     if (path.runtimeType == String) {
       final image = NetworkImage(path);
-      return ClipOval(
-        child: Material(
-          color: Colors.transparent,
-          child: Ink.image(
-            image: image,
-            fit: BoxFit.cover,
-            width: 128,
-            height: 128,
-            child: InkWell(onTap: onClicked),
-          ),
-        ),
-      );
+      // return ClipOval(
+      //   child: Material(
+      //     color: Colors.transparent,
+      //     child: Ink.image(
+      //       image: image,
+      //       fit: BoxFit.cover,
+      //       width: 128,
+      //       height: 128,
+      //       child: InkWell(onTap: onClicked),
+      //     ),
+      //   ),
+      // );
+      return GestureDetector(
+          onTap: () {
+            onClicked();
+          },
+          child: CircleAvatar(
+            radius: 64,
+            backgroundColor: AppTheme.colors.primaryFontColor,
+            foregroundColor: Colors.white,
+            child: Icon(
+              Icons.person,
+              size: 96,
+            ),
+          ));
     } else {
       return ClipOval(
         child: Material(
@@ -53,6 +66,7 @@ class ImageWidget extends StatelessWidget {
             child: Image.file(
               path!,
               height: 128,
+              width: 128,
               fit: BoxFit.cover,
             ),
             onTap: onClicked,
@@ -63,12 +77,15 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget buildEditIcon(Color color) => CircleAvatar(
-        backgroundColor: AppTheme.colors.primaryFontColor,
-        child: Icon(
-          Icons.edit,
-          size: 20,
-          color: Colors.white,
-        ),
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+            radius: 18,
+            backgroundColor: AppTheme.colors.primaryFontColor,
+            child: Icon(
+              Icons.edit,
+              size: 20,
+              color: Colors.white,
+            )),
       );
 
   Future<ImageSource?> showImageSource(BuildContext context) async {
