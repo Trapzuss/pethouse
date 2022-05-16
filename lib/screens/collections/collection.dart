@@ -35,7 +35,9 @@ class collectionScreen extends StatelessWidget {
             final posts = snapshot.data;
             // log('$posts');
             if (posts!.isEmpty) {
-              return EmptyPostsTypeEmpty();
+              return EmptyPostsTypeSomethingWrong(
+                text: "No post found. Let's add some post to this.",
+              );
             }
 
             return Container(

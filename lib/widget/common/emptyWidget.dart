@@ -48,7 +48,8 @@ class EmptyPostsTypeError extends StatelessWidget {
 }
 
 class EmptyPostsTypeSomethingWrong extends StatelessWidget {
-  const EmptyPostsTypeSomethingWrong({Key? key}) : super(key: key);
+  String? text = '';
+  EmptyPostsTypeSomethingWrong({Key? key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +60,14 @@ class EmptyPostsTypeSomethingWrong extends StatelessWidget {
     } else {
       path = 'assets/images/Catastronaut-cuate.png';
     }
-    print('$path');
-
+    // print('$path');
+    String msg = '';
+    if (text != '') {
+      msg = text!;
+    } else {
+      msg = "No post found. come back later.";
+    }
+    print(msg);
     return Center(
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         // Text('No data found here.'),
@@ -79,7 +86,7 @@ class EmptyPostsTypeSomethingWrong extends StatelessWidget {
                 color: AppTheme.colors.secondaryFontColor)),
         Container(
           margin: EdgeInsets.symmetric(vertical: 4),
-          child: Text("No post found. come back later.",
+          child: Text(msg,
               style: TextStyle(color: AppTheme.colors.secondaryFontColor)),
         ),
       ]),
