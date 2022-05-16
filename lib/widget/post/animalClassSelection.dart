@@ -49,7 +49,7 @@ class Animals_ClassSelectionState extends State<AnimalsClassSelection> {
                         initialItem: widget.selectedClass!),
                     children: const [
                       IconWithLabel(
-                        value: 'Fish',
+                        value: 'Fishs',
                         icon: Icons.pets,
                       ),
                       IconWithLabel(
