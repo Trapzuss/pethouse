@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_house/api/firebase_api.dart';
 import 'package:pet_house/models/post.dart';
+import 'package:pet_house/services/authentication_services.dart';
+import 'package:pet_house/services/post_services.dart';
 import 'package:pet_house/utils/utils.dart';
 import 'package:pet_house/widget/post/animalClassSelection.dart';
 import 'package:pet_house/widget/post/mediaAction.dart';
@@ -24,9 +26,17 @@ class newPost extends StatefulWidget {
 
 class _newPostState extends State<newPost> {
   // var uuid = Uuid();
+
+  final bool isLoading = false;
+  late final ValueChanged<bool> onLoadingChanged;
   int _selectedClass = -1;
   UploadTask? task;
   File? uploadFile;
+
+  void _handleLoading() {
+    onLoadingChanged(!isLoading);
+  }
+
   void pickImage(newMedia) {
     setState(() {
       this.uploadFile = File(newMedia.path);
@@ -34,6 +44,7 @@ class _newPostState extends State<newPost> {
     });
   }
 
+  final GlobalKey<FormState> _postFormKey = GlobalKey<FormState>();
   final _controllerTitle = TextEditingController();
   final _controllerDescription = TextEditingController();
 
@@ -43,9 +54,29 @@ class _newPostState extends State<newPost> {
     });
   }
 
-  Future createPost() async {
+  Future createPost(context) async {
+    // #validateForm
+    final isValid = _postFormKey.currentState!.validate();
+    if (!isValid) return;
+    if (_selectedClass == -1 || uploadFile == null) {
+      String errorMessage = '';
+      if (_selectedClass == -1) errorMessage = 'Animal class is required.';
+      if (uploadFile == null)
+        errorMessage = 'Please choose you picture for upload.';
+      BotToast.showNotification(
+        leading: (cancel) => SizedBox.fromSize(
+            size: const Size(40, 40),
+            child: IconButton(
+              icon: Icon(Icons.info, color: Colors.amber),
+              onPressed: cancel,
+            )),
+        duration: Duration(seconds: 3),
+        title: (_) => Text(errorMessage),
+      );
+
+      return;
+    }
     var close = BotToast.showLoading();
-    print(_selectedClass);
     // #upload file to storage
     if (uploadFile == null) return;
     final fileName = '${basename(uploadFile!.path)}${DateTime.now()}';
@@ -54,41 +85,20 @@ class _newPostState extends State<newPost> {
     if (task == null) return;
     final snapshot = await task!.whenComplete(() {});
     final urlDownload = await snapshot.ref.getDownloadURL();
-    print('Dowload-Link: $urlDownload');
 
     // #create document on firestore
     final title = _controllerTitle.text;
     final description = _controllerDescription.text;
-    final docPost = FirebaseFirestore.instance.collection('posts').doc();
+    await PostServices()
+        .createPost(_selectedClass, urlDownload, title, description);
 
-    final post = Post(
-        id: docPost.id,
-        imageUrl: urlDownload,
-        title: title,
-        description: description,
-        animalClass: Post.getAnimalClass(_selectedClass),
-        createdAt: DateTime.now());
-
-    final postJson = post.toJson();
-
-    await docPost.set(postJson);
-
-    // print('post successfully');
     close();
-    BotToast.showNotification(
-      leading: (cancel) => SizedBox.fromSize(
-          size: const Size(40, 40),
-          child: IconButton(
-            icon: Icon(Icons.check_circle, color: Colors.green),
-            onPressed: cancel,
-          )),
-      duration: Duration(seconds: 3),
-      title: (_) => Text('Done! check you post'),
-    );
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -96,10 +106,17 @@ class _newPostState extends State<newPost> {
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
                 onPressed: () async {
-                  await createPost();
-                  Navigator.pop(context);
+                  await createPost(context);
                 },
-                child: Text('POST'),
+                child: isLoading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text('POST'),
                 style: ElevatedButton.styleFrom(
                     primary: AppTheme.colors.primaryFontColor,
                     shape: new RoundedRectangleBorder(
@@ -110,21 +127,24 @@ class _newPostState extends State<newPost> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            margin: EdgeInsets.only(top: 12),
-            padding: EdgeInsets.all(8),
-            child: uploadFile != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.file(
-                      uploadFile!,
-                      height: 200,
-                      fit: BoxFit.contain,
-                    ),
-                  )
-                : EmptyImage(),
-          ),
+          !keyboardIsOpen
+              ? Container(
+                  margin: EdgeInsets.only(top: 12),
+                  padding: EdgeInsets.all(8),
+                  child: uploadFile != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            uploadFile!,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : EmptyImage(),
+                )
+              : Container(margin: EdgeInsets.symmetric(vertical: 10)),
           PostForm(
+              postFormKey: _postFormKey,
               controllerTitle: _controllerTitle,
               controllerDescription: _controllerDescription),
           Container(
@@ -137,22 +157,6 @@ class _newPostState extends State<newPost> {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class EmptyImage extends StatelessWidget {
-  const EmptyImage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Image.network(
-        AppTheme.src.empty,
-        alignment: Alignment.center,
-        height: 200,
       ),
     );
   }
