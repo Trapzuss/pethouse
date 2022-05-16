@@ -1,10 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_house/screens/collections/collections.dart';
+import 'package:pet_house/screens/discovery/discovery.dart';
 import 'package:pet_house/screens/feed.dart';
 import 'package:pet_house/screens/posts/newPost.dart';
-import 'package:pet_house/utils/global_variable.dart';
+import 'package:pet_house/screens/profile.dart';
+import 'package:pet_house/screens/discovery/search.dart';
+import 'package:pet_house/services/collection_services.dart';
+
 import 'package:pet_house/utils/utils.dart';
+import 'package:pet_house/widget/collection/createCollectionModal.dart';
 import 'package:pet_house/widget/navigation/categorieschip.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,19 +33,21 @@ class _DefaultLayoutState extends State<DefaultLayout> {
     (Icons.account_circle)
   ];
 
-  var items = [
-    FloatingActionButtonLocation.startFloat,
-    FloatingActionButtonLocation.startDocked,
-    FloatingActionButtonLocation.centerFloat,
-    FloatingActionButtonLocation.endFloat,
-    FloatingActionButtonLocation.endDocked,
-    FloatingActionButtonLocation.startTop,
-    FloatingActionButtonLocation.centerTop,
-    FloatingActionButtonLocation.endTop,
-  ];
+  // var items = [
+  //   FloatingActionButtonLocation.startFloat,
+  //   FloatingActionButtonLocation.startDocked,
+  //   FloatingActionButtonLocation.centerFloat,
+  //   FloatingActionButtonLocation.endFloat,
+  //   FloatingActionButtonLocation.endDocked,
+  //   FloatingActionButtonLocation.startTop,
+  //   FloatingActionButtonLocation.centerTop,
+  //   FloatingActionButtonLocation.endTop,
+  // ];
 
+  // final TextEditingController _controllerSearch = TextEditingController();
   // int _page = 0;
   late PageController pageController; // for tabs animation
+  String searchValue = '';
 
   @override
   void initState() {
@@ -51,6 +59,7 @@ class _DefaultLayoutState extends State<DefaultLayout> {
   void dispose() {
     super.dispose();
     pageController.dispose();
+    // _controllerSearch.dispose();
   }
 
   void onPageChanged(int index) {
@@ -98,7 +107,12 @@ class _DefaultLayoutState extends State<DefaultLayout> {
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
-        children: bottomNavigationScreenItems,
+        children: [
+          FeedScreen(),
+          DiscoveryScreen(searchValue: searchValue),
+          collectionsScreen(),
+          Profile(),
+        ],
         controller: pageController,
         onPageChanged: onPageChanged,
       ),
@@ -153,7 +167,10 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         ],
       );
     } else if (_appBarTitle == 'Discovery') {
-      return TextFormField(
+      return SizedBox(
+        height: 30,
+        child: TextFormField(
+          maxLines: 1,
           decoration: InputDecoration(
               hintText: 'search your animal',
               border: OutlineInputBorder(
@@ -163,10 +180,40 @@ class _DefaultLayoutState extends State<DefaultLayout> {
                   style: BorderStyle.none,
                 ),
               ),
-              contentPadding: EdgeInsets.all(10),
+              contentPadding: EdgeInsets.only(left: 10, right: 10),
               suffixIcon: Icon(Icons.search),
               filled: true,
-              fillColor: Color.fromARGB(179, 255, 255, 255)));
+              fillColor: Color.fromARGB(179, 255, 255, 255)),
+          onFieldSubmitted: (value) {
+            print(value);
+            setState(() {
+              searchValue = value;
+            });
+          },
+        ),
+      );
+    } else if (_appBarTitle == 'Collections') {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(),
+          Text(
+            _appBarTitle,
+            style:
+                GoogleFonts.freckleFace(fontSize: 36, color: Colors.brown[800]),
+          ),
+          InkWell(
+            child: Icon(
+              Icons.add_box,
+              color: AppTheme.colors.primaryFontColor,
+              size: 24,
+            ),
+            onTap: () {
+              showCreateCollectionModal(context);
+            },
+          )
+        ],
+      );
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -178,6 +225,5 @@ class _DefaultLayoutState extends State<DefaultLayout> {
         )
       ],
     );
-    ;
   }
 }
