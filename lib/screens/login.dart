@@ -162,13 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              "Forgot Password",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            // Text(
+                            //   "Forgot Password",
+                            //   style: TextStyle(
+                            //     fontSize: 12,
+                            //     fontWeight: FontWeight.bold,
+                            //   ),
+                            // ),
                             // Row(
                             //   mainAxisAlignment: MainAxisAlignment.start,
                             //   children: [

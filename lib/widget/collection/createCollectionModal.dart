@@ -16,73 +16,72 @@ Future showCreateCollectionModal(BuildContext context) async {
     Navigator.pop(context);
   }
 
-  if (Platform.isIOS) {
-    return showCupertinoModalPopup(
-        context: context,
-        builder: (context) => CupertinoActionSheet(
-              actions: [
-                CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Camera')),
-              ],
-            ));
-  } else {
-    return showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-        builder: (context) => FractionallySizedBox(
-              heightFactor: 0.9,
-              child: Container(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            customBorder: CircleBorder(),
-                            child: Icon(Icons.close),
-                            onTap: () {
-                              Navigator.pop(context);
+  // if (Platform.isIOS) {
+  //   return showCupertinoModalPopup(
+  //       context: context,
+  //       builder: (context) => CupertinoActionSheet(
+  //             actions: [
+  //               CupertinoActionSheetAction(
+  //                   onPressed: () => Navigator.of(context).pop(),
+  //                   child: Text('Camera')),
+  //             ],
+  //           ));
+  // } else
+  //  {
+  return showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => FractionallySizedBox(
+            heightFactor: 0.9,
+            child: Container(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          customBorder: CircleBorder(),
+                          child: Icon(Icons.close),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Text(
+                          'ADD COLLECTION',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(18),
+                                        side: BorderSide.none))),
+                            onPressed: () async {
+                              await submitCollectionForm(context);
                             },
-                          ),
-                          Text(
-                            'ADD COLLECTION',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          ElevatedButton(
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(18),
-                                          side: BorderSide.none))),
-                              onPressed: () async {
-                                await submitCollectionForm(context);
-                              },
-                              child: Text(
-                                'CREATE',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.colors.darkFontColor),
-                              )),
-                        ],
-                      ),
+                            child: Text(
+                              'CREATE',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.colors.darkFontColor),
+                            )),
+                      ],
                     ),
-                    _collectionForm(
-                        _collectionFormKey, _collectionNameController)
-                  ],
-                ),
+                  ),
+                  _collectionForm(_collectionFormKey, _collectionNameController)
+                ],
               ),
-            ));
-  }
+            ),
+          ));
+  // }
 }
 
 class _collectionForm extends StatelessWidget {

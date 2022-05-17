@@ -55,8 +55,11 @@ class PostServices {
     }
   }
 
-  Stream<List<PostModel>> getPosts() => docPosts.snapshots().map((snapshot) =>
-      snapshot.docs.map((doc) => PostModel.fromJson(doc.data())).toList());
+  Stream<List<PostModel>> getPosts() => docPosts
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => PostModel.fromJson(doc.data())).toList());
 
   Future<PostModel?> getPostById(id) async {
     try {
@@ -91,13 +94,16 @@ class PostServices {
           snapshot.docs.map((doc) => PostModel.fromJson(doc.data())).toList());
 
   Stream<List<PostModel>> getPostsBySearching(String keyword) {
-    return docPosts.snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => PostModel.fromJson(doc.data()))
-        .where((post) =>
-            post.title.toLowerCase().contains(keyword.toLowerCase()) ||
-            post.description.toLowerCase().contains(keyword.toLowerCase()) ||
-            post.animalClass.toLowerCase().contains(keyword.toLowerCase()))
-        .toList());
+    return docPosts.orderBy('createdAt', descending: true).snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => PostModel.fromJson(doc.data()))
+            .where((post) =>
+                post.title.toLowerCase().contains(keyword.toLowerCase()) ||
+                post.description
+                    .toLowerCase()
+                    .contains(keyword.toLowerCase()) ||
+                post.animalClass.toLowerCase().contains(keyword.toLowerCase()))
+            .toList());
   }
 
   Future onChangeFavorites(String action, String postId, String uid) async {

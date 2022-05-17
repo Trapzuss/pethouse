@@ -3,6 +3,7 @@ import 'package:pet_house/utils/utils.dart';
 
 class PostForm extends StatefulWidget {
   var controllerTitle = TextEditingController();
+  var controllerAnimalName = TextEditingController();
   var controllerDescription = TextEditingController();
   var postFormKey = GlobalKey<FormState>();
 
@@ -10,6 +11,7 @@ class PostForm extends StatefulWidget {
       {Key? key,
       required this.postFormKey,
       required this.controllerTitle,
+      required this.controllerAnimalName,
       required this.controllerDescription})
       : super(key: key);
 
@@ -21,6 +23,13 @@ class _PostFormState extends State<PostForm> {
   String? _validateTitle(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please input title for your post';
+    }
+    return null;
+  }
+
+  String? _validateAnimalName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please input animal name for your post';
     }
     return null;
   }
@@ -70,6 +79,32 @@ class _PostFormState extends State<PostForm> {
                                 hintText: 'Add your post name...'))
                       ]),
                 ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Animal name',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: AppTheme.colors.primaryFontColor,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        TextFormField(
+                            validator: _validateAnimalName,
+                            controller: widget.controllerAnimalName,
+                            minLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration: InputDecoration.collapsed(
+                                hintText: 'Add your animal name here...'))
+                      ]),
+                ),
                 Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +122,12 @@ class _PostFormState extends State<PostForm> {
                       TextFormField(
                           // validator: _validateDescription,
                           controller: widget.controllerDescription,
-                          minLines: 6,
+                          minLines: 2,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           decoration: InputDecoration.collapsed(
                               hintText:
-                                  'Tell people what your picture is all about...  '))
+                                  'Tell people what your post is all about...  '))
                     ])
               ],
             )),

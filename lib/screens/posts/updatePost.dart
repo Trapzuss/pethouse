@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_new
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,7 +44,7 @@ class _updatePostScreenState extends State<updatePostScreen> {
   final GlobalKey<FormState> _postFormKey = GlobalKey<FormState>();
   final _controllerTitle = TextEditingController();
   final _controllerDescription = TextEditingController();
-
+  final _controllerAnimalName = TextEditingController();
   Future changingClass(newClass) async {
     setState(() {
       _selectedClass = newClass;
@@ -54,7 +55,14 @@ class _updatePostScreenState extends State<updatePostScreen> {
     int indexOfClass = PostModel.getAnimalClassIndex(
         widget.post['animalClass'].toString().trim());
     _controllerTitle.text = widget.post['title'];
-    _controllerDescription.text = widget.post['description'];
+    List<String> description = widget.post['description'].toString().split('#');
+
+    if (description.length >= 2) {
+      _controllerDescription.text = description[0];
+      _controllerAnimalName.text = description[1];
+    } else {
+      _controllerDescription.text = description[0];
+    }
 
     setState(() {
       _selectedClass = indexOfClass;
@@ -74,10 +82,22 @@ class _updatePostScreenState extends State<updatePostScreen> {
     var close = BotToast.showLoading();
 
     // #create document on firestore
-    final title = _controllerTitle.text;
-    final description = _controllerDescription.text;
-    await PostServices()
-        .updatePost(widget.post['postId'], title, description, _selectedClass);
+    String title = _controllerTitle.text;
+    String description = _controllerDescription.text;
+    String animalName = _controllerAnimalName.text;
+    String animalNameComputed = '';
+    String descriptionComputed = '';
+    if (animalName.contains('#')) {
+      animalNameComputed = animalName.substring(1, animalName.length);
+    } else {
+      animalNameComputed = "#$animalName";
+    }
+    // log("$animalName");
+    // log("$animalNameComputed");
+
+    descriptionComputed = "$description $animalNameComputed";
+    await PostServices().updatePost(
+        widget.post['postId'], title, descriptionComputed, _selectedClass);
 
     close();
     Navigator.pop(context, true);
@@ -154,6 +174,7 @@ class _updatePostScreenState extends State<updatePostScreen> {
           PostForm(
               postFormKey: _postFormKey,
               controllerTitle: _controllerTitle,
+              controllerAnimalName: _controllerAnimalName,
               controllerDescription: _controllerDescription),
           Container(
             child: Column(

@@ -56,7 +56,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                       return Center(child: CircularProgressIndicator());
                     }),
               ),
-        Expanded(child: card_Bottom()),
+        widget.searchValue!.isEmpty
+            ? Expanded(child: card_Bottom())
+            : Container(),
       ],
     );
   }

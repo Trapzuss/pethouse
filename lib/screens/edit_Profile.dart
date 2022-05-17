@@ -201,7 +201,7 @@ class _editProfileState extends State<editProfile> {
                         const Expanded(
                           flex: 1,
                           child: const Text(
-                            "Name  ",
+                            "Username  ",
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -46,6 +47,7 @@ class _newPostState extends State<newPost> {
 
   final GlobalKey<FormState> _postFormKey = GlobalKey<FormState>();
   final _controllerTitle = TextEditingController();
+  final _controllerAnimalName = TextEditingController();
   final _controllerDescription = TextEditingController();
 
   Future changingClass(newClass) async {
@@ -87,10 +89,23 @@ class _newPostState extends State<newPost> {
     final urlDownload = await snapshot.ref.getDownloadURL();
 
     // #create document on firestore
-    final title = _controllerTitle.text;
-    final description = _controllerDescription.text;
+    String title = _controllerTitle.text;
+    String description = _controllerDescription.text;
+    String animalName = _controllerAnimalName.text;
+    String descriptionComputed = '';
+    String animalNameComputed = '';
+    if (animalName.contains('#')) {
+      animalNameComputed = animalName.substring(1, animalName.length);
+    } else {
+      animalNameComputed = "#$animalName";
+    }
+    // log("$animalName");
+    // log("$animalNameComputed");
+
+    descriptionComputed = "$description $animalNameComputed";
+
     await PostServices()
-        .createPost(_selectedClass, urlDownload, title, description);
+        .createPost(_selectedClass, urlDownload, title, descriptionComputed);
 
     close();
     Navigator.pop(context);
@@ -146,6 +161,7 @@ class _newPostState extends State<newPost> {
           PostForm(
               postFormKey: _postFormKey,
               controllerTitle: _controllerTitle,
+              controllerAnimalName: _controllerAnimalName,
               controllerDescription: _controllerDescription),
           Container(
             child: Column(
