@@ -171,7 +171,7 @@ class ClassList extends StatefulWidget {
 class ClassListState extends State<ClassList> {
   static final _animalClasses = [
     // {'value': 'Did not select yet?', 'icon': Icons.pets},
-    {'value': 'fish', 'icon': Icons.pets},
+    {'value': 'fishs', 'icon': Icons.pets},
     {'value': 'amphibians', 'icon': Icons.pets},
     {'value': 'aves', 'icon': Icons.pets},
     {'value': 'mammals', 'icon': Icons.pets},

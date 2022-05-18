@@ -26,7 +26,7 @@ class PostModel {
       this.ownerUsername});
 
   static final List animalClasses = [
-    {'value': 'Fish', 'icon': Icons.pets},
+    {'value': 'Fishs', 'icon': Icons.pets},
     {'value': 'Amphibians', 'icon': Icons.pets},
     {'value': 'Aves', 'icon': Icons.pets},
     {'value': 'Mammals', 'icon': Icons.pets},
